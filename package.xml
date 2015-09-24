@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>ihmc_ros_control</name>
+  <version>0.0.1</version>
+  <description>This package provides facilities for using IHMC Java software as
+  a ros_control compatible controller through native libraries</description>
+
+  <author email="jsmith@ihmc.us">Jesper Smith</author>
+  <author email="dstephen@ihmc.us">Doug Stephen</author>
+  <maintainer email="jsmith@ihmc.us">Jesper Smith</maintainer>
+  <maintainer email="dstephen@ihmc.us">Doug Stephen</maintainer>
+
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+
+  </export>
+</package>

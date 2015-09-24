@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
-project(IHMCROSControl)
+project(ihmc_ros_control)
+
+find_package(catkin)
 
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   SET(CMAKE_INSTALL_PREFIX
@@ -12,3 +14,5 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 include_directories(include)
 
 add_subdirectory(csrc)
+
+catkin_package()
