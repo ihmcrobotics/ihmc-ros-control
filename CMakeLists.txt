@@ -10,6 +10,4 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 
-find_package(JNI REQUIRED)
-
 add_subdirectory(csrc)
