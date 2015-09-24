@@ -4,5 +4,11 @@
 
 int main(int argc, char *argv[])
 {
-    std::cout << "HELLO WORLD" << std::endl;
+    Launcher launcher("-verbose:gc -XX:+UseSerialGC");
+
+
+    launcher.startVM();
+    launcher.callStaticVoidMethod("java.lang.System", "gc");
+    launcher.stopVM();
+    launcher.callStaticVoidMethod("java.lang.System", "gc");
 }
