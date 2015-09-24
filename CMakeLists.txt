@@ -9,5 +9,6 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
+include_directories(include)
 
 add_subdirectory(csrc)
