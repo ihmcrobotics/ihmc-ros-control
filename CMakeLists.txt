@@ -11,7 +11,5 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_subdirectory(csrc)
 
 
-# Add include files to QTCreator
-FILE(GLOB_RECURSE INCLUDE_FILES "include/*.h")
-add_library(QTCreatorIncludes ${INCLUDE_FILES})
+
 
