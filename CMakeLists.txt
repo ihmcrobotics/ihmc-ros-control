@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ihmc_ros_control)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS)
+
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 catkin_package(INCLUDE_DIRS include LIBRARIES ${PROJECT_NAME})

@@ -3,7 +3,7 @@
   <name>ihmc_ros_control</name>
   <version>0.0.1</version>
   <description>This package provides facilities for using IHMC Java software as
-  a ros_control compatible controller through native libraries</description>
+    a ros_control compatible controller through native libraries</description>
 
   <author email="jsmith@ihmc.us">Jesper Smith</author>
   <author email="dstephen@ihmc.us">Doug Stephen</author>
@@ -13,6 +13,10 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>ros_control</build_depend>
+  <build_depend>ros_controllers</build_depend>
+  <run_depend>ros_control</run_depend>
+  <run_depend>ros_controllers</run_depend>
 
   <export>
 
