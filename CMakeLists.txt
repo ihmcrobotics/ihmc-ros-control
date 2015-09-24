@@ -1,18 +1,17 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.3)
 project(ihmc_ros_control)
 
-find_package(catkin)
-
-IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  SET(CMAKE_INSTALL_PREFIX
-    ${CMAKE_SOURCE_DIR}/bin CACHE PATH "IHMCROSControl install prefix" FORCE
-    )
-ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-
+find_package(catkin REQUIRED)
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-include_directories(include)
+catkin_package(INCLUDE_DIRS include LIBRARIES ${PROJECT_NAME})
 
+
+include_directories(include ${catkin_INCLUDE_DIRS})
 add_subdirectory(csrc)
 
-catkin_package()
+
+# Add include files to QTCreator
+FILE(GLOB_RECURSE INCLUDE_FILES "include/*.h")
+add_library(QTCreatorIncludes ${INCLUDE_FILES})
+
