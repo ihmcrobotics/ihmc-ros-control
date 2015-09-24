@@ -38,7 +38,7 @@ Launcher::Launcher(std::string vmOptions)
 
 
     JavaVMOption* javaOptions = new JavaVMOption[options.size()];
-    for(int i = 0; i < options.size(); i++)
+    for(uint i = 0; i < options.size(); i++)
     {
         javaOptions[i].optionString = new char[options.at(i).length() + 1];
         std::strcpy (javaOptions[i].optionString, options.at(i).c_str());
