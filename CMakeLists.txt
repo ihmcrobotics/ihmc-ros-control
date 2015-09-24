@@ -6,8 +6,9 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 catkin_package(INCLUDE_DIRS include LIBRARIES ${PROJECT_NAME})
 
+find_package(JNI REQUIRED)
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${JNI_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 add_subdirectory(csrc)
 
 
