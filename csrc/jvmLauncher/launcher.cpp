@@ -36,16 +36,16 @@ Launcher::Launcher(std::string vmOptions)
         options.push_back(option);
     }
 
-    JavaVMOption* javaOptions = new JavaVMOption[options.size()];
 
+    JavaVMOption* javaOptions = new JavaVMOption[options.size()];
     for(int i = 0; i < options.size(); i++)
     {
-        javaOptions[i].optionString = new char[options.at(i).length()];
+        javaOptions[i].optionString = new char[options.at(i).length() + 1];
         std::strcpy (javaOptions[i].optionString, options.at(i).c_str());
-        std::cout << javaOptions[i].optionString << std::endl;
+        std::cout << javaOptions[i].optionString << "::" << std::endl;
     }
 
-    vmArguments.nOptions = options.size();
+    vmArguments.nOptions = 1;
     vmArguments.options = javaOptions;
     vmArguments.ignoreUnrecognized = true;
 }
@@ -55,6 +55,20 @@ bool Launcher::startVM()
     jint res = JNI_CreateJavaVM(&jvm, (void**) &env, &vmArguments);
     displayJNIError("Starting Java VM", res);
     return res == JNI_OK;
+}
+
+jclass Launcher::getClass(std::string className)
+{
+    std::string classNameCopy(className);
+    std::replace (classNameCopy.begin(), classNameCopy.end(), '.', '/');
+
+    jclass cls = env->FindClass(classNameCopy.c_str());
+    if(!cls)
+    {
+        std::cerr << "Cannot find class " << classNameCopy << std::endl;
+        return NULL;
+    }
+    return cls;
 }
 
 bool Launcher::callStaticVoidMethod(std::string className, std::string method)
@@ -67,14 +81,9 @@ bool Launcher::callStaticVoidMethod(std::string className, std::string method)
         return false;
     }
 
-    std::string classNameCopy(className);
-    std::replace (classNameCopy.begin(), classNameCopy.end(), '.', '/');
-    jclass cls = env->FindClass(classNameCopy.c_str());
-    if(!cls)
-    {
-        std::cerr << "Cannot find class " << classNameCopy << std::endl;
-        return false;
-    }
+
+    jclass cls = getClass(className);
+    if(!cls) return false;
 
 
     jmethodID mid = env->GetStaticMethodID(cls, method.c_str(), "()V");
@@ -86,6 +95,30 @@ bool Launcher::callStaticVoidMethod(std::string className, std::string method)
 
     env->CallStaticVoidMethod(cls, mid);
     return true;
+}
+
+bool Launcher::registerNativeMethod(std::string className, std::string methodName, std::string signature, void *functionPointer)
+{
+    if(!env)
+    {
+        std::cerr << "JVM is not started" << std::endl;
+        return false;
+    }
+
+    jclass cls = getClass(className);
+    if(!cls) return false;
+
+    JNINativeMethod *method = new JNINativeMethod[1];
+    method[0].name = new char[methodName.length() + 1];
+    method[0].signature = new char[signature.length() + 1];
+
+    std::strcpy(method[0].name, methodName.c_str());
+    std::strcpy(method[0].signature, signature.c_str());
+
+    method[0].fnPtr = functionPointer;
+
+    env->RegisterNatives(cls, method, 1);
+
 }
 
 bool Launcher::stopVM()
@@ -113,6 +146,9 @@ bool Launcher::stopVM()
 
 Launcher::~Launcher()
 {
+    if(jvm)
+        stopVM();
+
     delete vmArguments.options;
 }
 

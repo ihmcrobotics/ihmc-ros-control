@@ -2,3 +2,7 @@ build
 bin
 CMakeLists.txt.user
 .idea
+.classpath
+.settings
+.gradle
+.project
