@@ -18,9 +18,11 @@ namespace ihmc_ros_control {
 
     void RRBotSimpleTestPositionController::update(const ros::Time &time, const ros::Duration &period) {
 
-        joint1Controller.setCommand(1.0);
-
-        joint2Controller.setCommand(this->joint2PositionCommand);
+        SimplePDController* joint1Controller = this->jointControllersMap.at(std::string("joint1"));
+        joint1Controller->updateJointHandle(1.0, 0.0);
+        
+        SimplePDController* joint2Controller = this->jointControllersMap.at(std::string("joint2"));
+        joint2Controller->updateJointHandle(this->joint2PositionCommand, 0.0);
 
         this->joint2PositionCommand += (0.001 * this->directionFactor);
 
@@ -30,36 +32,20 @@ namespace ihmc_ros_control {
         else if (this->joint2PositionCommand < -1.0) {
             this->directionFactor = 1.0;
         }
-
-        joint1Controller.update(time, period);
-        joint2Controller.update(time, period);
     }
 
     bool RRBotSimpleTestPositionController::init(hardware_interface::EffortJointInterface *hw,
                                                  ros::NodeHandle &controller_nh) {
 
-        controller_nh.setParam("joint", "joint1");
-        controller_nh.setParam("pid/p", 10000.0);
-        controller_nh.setParam("pid/i", 0.0);
-        controller_nh.setParam("pid/d", 10.0);
-        controller_nh.setParam("pid/max", 3.0);
-        controller_nh.setParam("pid/min", -3.0);
-        joint1Controller.init(hw, controller_nh);
+        const hardware_interface::JointHandle &joint1Handle = hw->getHandle("joint1");
+        auto joint1Controller = new SimplePDController(joint1Handle, true, 10000.0, 10.0);
+        const hardware_interface::JointHandle &joint2Handle = hw->getHandle("joint2");
+        auto joint2Controller = new SimplePDController(joint2Handle, true, 100.0, 10.0);
 
-        controller_nh.setParam("joint", "joint2");
-        controller_nh.setParam("pid/p", 100.0);
-        controller_nh.setParam("pid/i", 0.0);
-        controller_nh.setParam("pid/d", 10.0);
-        controller_nh.setParam("pid/max", 3.0);
-        controller_nh.setParam("pid/min", -3.0);
-        joint2Controller.init(hw, controller_nh);
+        this->jointControllersMap.insert(std::pair<std::string, SimplePDController*>(std::string("joint1"), joint1Controller));
+        this->jointControllersMap.insert(std::pair<std::string, SimplePDController*>(std::string("joint2"), joint2Controller));
 
         return true;
-    }
-
-    void RRBotSimpleTestPositionController::starting(const ros::Time &time) {
-        joint1Controller.starting(time);
-        joint2Controller.starting(time);
     }
 }
 
