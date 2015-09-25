@@ -1,4 +1,4 @@
-<library path="lib/libihmc_ros_control">
+<library path="lib/libihmc_rrbot_controller">
     <class
             name="ihmc_ros_control/RRBotSimpleTestPositionController"
             type="ihmc_ros_control::RRBotSimpleTestPositionController"
