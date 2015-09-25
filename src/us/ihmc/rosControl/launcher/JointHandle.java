@@ -1,6 +1,6 @@
 package us.ihmc.rosControl.launcher;
 
-interface EffortJointInterface
+public interface JointHandle
 {
    public String getName();
    
