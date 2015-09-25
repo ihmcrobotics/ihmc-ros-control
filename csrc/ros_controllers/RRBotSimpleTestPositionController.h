@@ -5,9 +5,12 @@
 #ifndef PROJECT_RRBOTSINEWAVEPOSITIONCONTROLLER_H
 #define PROJECT_RRBOTSINEWAVEPOSITIONCONTROLLER_H
 
+#include <unordered_map>
 #include <controller_interface/controller.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <effort_controllers/joint_position_controller.h>
+
+#include "SimplePDController.h"
 
 namespace ihmc_ros_control
 {
@@ -22,13 +25,10 @@ namespace ihmc_ros_control
 
         virtual bool init(hardware_interface::EffortJointInterface *hw, ros::NodeHandle &controller_nh);
 
-        virtual void starting(const ros::Time &time) override;
-
     private:
         double joint2PositionCommand;
         double directionFactor;
-        effort_controllers::JointPositionController joint1Controller;
-        effort_controllers::JointPositionController joint2Controller;
+        std::unordered_map<std::string, SimplePDController*> jointControllersMap;
     };
 
 }
