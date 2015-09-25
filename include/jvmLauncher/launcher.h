@@ -8,12 +8,14 @@ struct JavaMethod
 {
     jclass clazz;
     jmethodID methodID;
+
 };
 
 struct StaticJavaMethod
 {
     jclass clazz;
     jmethodID methodID;
+
 };
 
 
@@ -37,6 +39,8 @@ public:
 
     void call(StaticJavaMethod*, ...);
     void call(JavaMethod*, jobject obj, ...);
+
+    jobject createObject(JavaMethod* constructor, ...);
 
     bool registerNativeMethod(std::string className, std::string method, std::string signature, void* functionPointer);
 
