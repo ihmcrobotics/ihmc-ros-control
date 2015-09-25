@@ -28,7 +28,16 @@ int main(int argc, char *argv[])
     launcher.registerNativeMethod("us.ihmc.rosControl.launcher.TestJVMLaunchCallback", "callVoidFunctionWithString", "(Ljava/lang/String;)V", (void *)&callVoidFunctionWithString);
     launcher.registerNativeMethod("us.ihmc.rosControl.launcher.TestJVMLaunchCallback", "callIntFunctionWithBoolean", "(ZZ)I", (void *)&callIntFunctionWithBoolean);
 
-    launcher.callStaticVoidMethod("us.ihmc.rosControl.launcher.TestJVMLaunchCallback", "execute");
+
+    JavaMethod* ctor = launcher.getJavaMethod("us.ihmc.rosControl.launcher.TestJVMLaunchCallback", "<init>", "(I)V");
+    JavaMethod* method = launcher.getJavaMethod("us.ihmc.rosControl.launcher.TestJVMLaunchCallback", "execute", "(I)V");
+
+    if(ctor && method)
+    {
+        jobject obj = launcher.createObject(ctor, 42);
+        launcher.call(method, obj, 124);
+    }
+
 
 
 

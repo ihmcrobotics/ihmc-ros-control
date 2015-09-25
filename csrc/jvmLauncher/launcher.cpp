@@ -21,6 +21,28 @@ case JNI_EINVAL : std::cerr << prefix << ": invalid arguments" << std::endl; ret
     }
 }
 
+void Launcher::call(JavaMethod *method, jobject obj, ...)
+{
+    if(env->IsInstanceOf(obj, method->clazz))
+    {
+        va_list arglist;
+        va_start(arglist, obj);
+        env->CallVoidMethodV(obj, method->methodID, arglist);
+        va_end(arglist);
+    }
+    else
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": Unexpected object type" << std::endl;
+    }
+}
+
+void Launcher::call(StaticJavaMethod *method, ...)
+{
+    va_list arglist;
+    va_start(arglist, method);
+    env->CallStaticVoidMethodV(method->clazz, method->methodID, arglist);
+    va_end(arglist);
+}
 
 Launcher::Launcher(std::string vmOptions)
 {
@@ -71,30 +93,76 @@ jclass Launcher::getClass(std::string className)
     return cls;
 }
 
-bool Launcher::callStaticVoidMethod(std::string className, std::string method)
+jobject Launcher::createObject(JavaMethod *constructor, ...)
 {
+    if(!env)
+    {
+        std::cerr << "JVM is not started" << std::endl;
+        return nullptr;
+    }
 
+
+    va_list arglist;
+    va_start(arglist, constructor);
+    jobject newObject = env->NewObjectV(constructor->clazz, constructor->methodID, arglist);
+    va_end(arglist);
+
+    return env->NewGlobalRef(newObject);
+
+}
+
+StaticJavaMethod* Launcher::getStaticJavaMethod(std::string className, std::string methodName, std::string signature)
+{
 
     if(!env)
     {
         std::cerr << "JVM is not started" << std::endl;
-        return false;
+        return nullptr;
     }
-
 
     jclass cls = getClass(className);
-    if(!cls) return false;
+    if(!cls) return nullptr;
 
 
-    jmethodID mid = env->GetStaticMethodID(cls, method.c_str(), "()V");
+    jmethodID mid = env->GetStaticMethodID(cls, methodName.c_str(), signature.c_str());
     if(!mid)
     {
-        std::cerr << "Cannot find method " << method << "()" << std::endl;
-        return false;
+        std::cerr << "Cannot find method " << methodName << signature << std::endl;
+        return nullptr;
     }
 
-    env->CallStaticVoidMethod(cls, mid);
-    return true;
+    StaticJavaMethod* method = new StaticJavaMethod();
+    method->clazz = (jclass) env->NewGlobalRef(cls);
+    method->methodID = mid;
+
+    return method;
+}
+
+JavaMethod* Launcher::getJavaMethod(std::string className, std::string methodName, std::string signature)
+{
+
+    if(!env)
+    {
+        std::cerr << "JVM is not started" << std::endl;
+        return nullptr;
+    }
+
+    jclass cls = getClass(className);
+    if(!cls) return nullptr;
+
+
+    jmethodID mid = env->GetMethodID(cls, methodName.c_str(), signature.c_str());
+    if(!mid)
+    {
+        std::cerr << "Cannot find method " << methodName << "()" << std::endl;
+        return nullptr;
+    }
+
+    JavaMethod* method = new JavaMethod();
+    method->clazz = (jclass) env->NewGlobalRef(cls);
+    method->methodID = mid;
+
+    return method;
 }
 
 bool Launcher::registerNativeMethod(std::string className, std::string methodName, std::string signature, void *functionPointer)
@@ -118,7 +186,7 @@ bool Launcher::registerNativeMethod(std::string className, std::string methodNam
     method[0].fnPtr = functionPointer;
 
     env->RegisterNatives(cls, method, 1);
-
+    return true;
 }
 
 bool Launcher::stopVM()
@@ -151,4 +219,5 @@ Launcher::~Launcher()
 
     delete vmArguments.options;
 }
+
 
