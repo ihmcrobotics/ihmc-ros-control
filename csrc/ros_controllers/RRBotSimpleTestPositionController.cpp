@@ -17,17 +17,12 @@ namespace ihmc_ros_control {
     }
 
     void RRBotSimpleTestPositionController::update(const ros::Time &time, const ros::Duration &period) {
-        for (auto joint : this->joints) {
-            if (joint.getName() == "joint1") {
-                joint.setCommand(1.0);
-            }
 
-            if (joint.getName() == "joint2") {
-                joint.setCommand(this->joint2PositionCommand);
-            }
-        }
+        joint1Controller.setCommand(1.0);
 
-        this->joint2PositionCommand += (0.1 * this->directionFactor);
+        joint2Controller.setCommand(this->joint2PositionCommand);
+
+        this->joint2PositionCommand += (0.001 * this->directionFactor);
 
         if (this->joint2PositionCommand > 1.0) {
             this->directionFactor = -1.0;
@@ -35,48 +30,36 @@ namespace ihmc_ros_control {
         else if (this->joint2PositionCommand < -1.0) {
             this->directionFactor = 1.0;
         }
+
+        joint1Controller.update(time, period);
+        joint2Controller.update(time, period);
     }
 
-    bool RRBotSimpleTestPositionController::init(hardware_interface::PositionJointInterface *hw,
+    bool RRBotSimpleTestPositionController::init(hardware_interface::EffortJointInterface *hw,
                                                  ros::NodeHandle &controller_nh) {
 
-        ROS_INFO("This is a test.");
-        ROS_INFO("Size of resources: %lu", hw->getNames().size());
+        controller_nh.setParam("joint", "joint1");
+        controller_nh.setParam("pid/p", 10000.0);
+        controller_nh.setParam("pid/i", 0.0);
+        controller_nh.setParam("pid/d", 10.0);
+        controller_nh.setParam("pid/max", 3.0);
+        controller_nh.setParam("pid/min", -3.0);
+        joint1Controller.init(hw, controller_nh);
 
-        for(auto jointName : hw->getNames())
-        {
-            ROS_INFO("%s", jointName.c_str());
-        }
+        controller_nh.setParam("joint", "joint2");
+        controller_nh.setParam("pid/p", 100.0);
+        controller_nh.setParam("pid/i", 0.0);
+        controller_nh.setParam("pid/d", 10.0);
+        controller_nh.setParam("pid/max", 3.0);
+        controller_nh.setParam("pid/min", -3.0);
+        joint2Controller.init(hw, controller_nh);
 
-        bool initSuccess = controller_interface::Controller<hardware_interface::PositionJointInterface>::init(hw,
-                                                                                                              controller_nh);
-
-        if (initSuccess) {
-            this->joints.push_back(hw->getHandle("joint1"));
-            this->joints.push_back(hw->getHandle("joint2"));
-        }
-        return initSuccess;
+        return true;
     }
 
-    bool RRBotSimpleTestPositionController::init(hardware_interface::PositionJointInterface *hw,
-                                                 ros::NodeHandle &root_nh,
-                                                 ros::NodeHandle &controller_nh) {
-        ROS_INFO("This is a test.");
-        ROS_INFO("Size of resources: %lu", hw->getNames().size());
-
-        for(auto jointName : hw->getNames())
-        {
-            ROS_INFO("%s", jointName.c_str());
-        }
-
-        bool initSuccess = controller_interface::Controller<hardware_interface::PositionJointInterface>::init(hw,
-                                                                                                              root_nh,
-                                                                                                              controller_nh);
-        if (initSuccess) {
-            this->joints.push_back(hw->getHandle("joint1"));
-            this->joints.push_back(hw->getHandle("joint2"));
-        }
-        return initSuccess;
+    void RRBotSimpleTestPositionController::starting(const ros::Time &time) {
+        joint1Controller.starting(time);
+        joint2Controller.starting(time);
     }
 }
 
