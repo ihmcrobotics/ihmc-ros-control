@@ -3,6 +3,20 @@
 #include <jni.h>
 #include <string>
 
+
+struct JavaMethod
+{
+    jclass clazz;
+    jmethodID methodID;
+};
+
+struct StaticJavaMethod
+{
+    jclass clazz;
+    jmethodID methodID;
+};
+
+
 class Launcher
 {
 private:
@@ -18,7 +32,12 @@ public:
     bool startVM();
     bool stopVM();
 
-    bool callStaticVoidMethod(std::string className, std::string method);
+    JavaMethod* getJavaMethod(std::string className, std::string method, std::string signature);
+    StaticJavaMethod* getStaticJavaMethod(std::string className, std::string method, std::string signature);
+
+    void call(StaticJavaMethod*, ...);
+    void call(JavaMethod*, jobject obj, ...);
+
     bool registerNativeMethod(std::string className, std::string method, std::string signature, void* functionPointer);
 
     ~Launcher();
