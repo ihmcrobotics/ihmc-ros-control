@@ -212,6 +212,19 @@ bool Launcher::stopVM()
 
 }
 
+bool Launcher::isInstanceOf(std::string subclass, std::string superclass)
+{
+    if(!env)
+    {
+        std::cerr << "JVM has not been started yet" << std::endl;
+        return false;
+    }
+    jclass sub = getClass(subclass);
+    jclass sup = getClass(superclass);
+
+    return env->IsAssignableFrom(sub, sup);
+}
+
 Launcher::~Launcher()
 {
     if(jvm)

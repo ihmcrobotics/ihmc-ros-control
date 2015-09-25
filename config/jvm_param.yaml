@@ -1,0 +1,5 @@
+rrbot:
+    ihmc_ros_control_java_bridge:
+        jvm_args: "-verbose -Djava.class.path=src/ihmcroscontrol/build/classes/main"
+        type: ihmc_ros_control/IHMCRosControlJavaBridge
+

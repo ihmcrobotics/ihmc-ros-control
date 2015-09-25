@@ -44,6 +44,8 @@ public:
 
     bool registerNativeMethod(std::string className, std::string method, std::string signature, void* functionPointer);
 
+    bool isInstanceOf(std::string classA, std::string classB);
+
     ~Launcher();
 };
 
