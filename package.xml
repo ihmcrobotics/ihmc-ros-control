@@ -13,12 +13,48 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>ros_control</build_depend>
-  <build_depend>ros_controllers</build_depend>
-  <run_depend>ros_control</run_depend>
-  <run_depend>ros_controllers</run_depend>
+  <build_depend>joint_limits_interface</build_depend>
+  <build_depend>transmission_interface</build_depend>
+  <build_depend>realtime_tools</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <build_depend>controller_interface</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>controller_manager_tests</build_depend>
+  <build_depend>controller_manager_msgs</build_depend>
+  <build_depend>control_toolbox</build_depend>
+  <build_depend>imu_sensor_controller</build_depend>
+  <build_depend>force_torque_sensor_controller</build_depend>
+  <build_depend>position_controllers</build_depend>
+  <build_depend>velocity_controllers</build_depend>
+  <build_depend>effort_controllers</build_depend>
+  <build_depend>forward_command_controller</build_depend>
+  <build_depend>joint_state_controller</build_depend>
+  <build_depend>joint_trajectory_controller</build_depend>
+  <build_depend>diff_drive_controller</build_depend>
+  <build_depend>gripper_action_controller</build_depend>
+  <build_depend>rqt_joint_trajectory_controller</build_depend>
+  <run_depend>joint_limits_interface</run_depend>
+  <run_depend>transmission_interface</run_depend>
+  <run_depend>realtime_tools</run_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>controller_interface</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>controller_manager_tests</run_depend>
+  <run_depend>controller_manager_msgs</run_depend>
+  <run_depend>control_toolbox</run_depend>
+  <run_depend>imu_sensor_controller</run_depend>
+  <run_depend>force_torque_sensor_controller</run_depend>
+  <run_depend>position_controllers</run_depend>
+  <run_depend>velocity_controllers</run_depend>
+  <run_depend>effort_controllers</run_depend>
+  <run_depend>forward_command_controller</run_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <run_depend>joint_trajectory_controller</run_depend>
+  <run_depend>diff_drive_controller</run_depend>
+  <run_depend>gripper_action_controller</run_depend>
+  <run_depend>rqt_joint_trajectory_controller</run_depend>
 
   <export>
-
+    <controller_interface plugin="${prefix}/controllers_plugins.xml"/>
   </export>
 </package>
