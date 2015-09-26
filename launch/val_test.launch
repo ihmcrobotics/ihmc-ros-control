@@ -1,0 +1,63 @@
+<launch>
+
+    <arg name="paused" default="true"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+
+    <include file="$(find val_gazebo)/launch/val_empty_world.launch">
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="headless" value="$(arg headless)"/>
+        <arg name="debug" value="$(arg debug)" />
+    </include>
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <!--<rosparam file="$(find val_deploy)/config/val_ros_control_test.yaml" command="load"/>-->
+    <rosparam file="$(find ihmc_ros_control)/config/val_test.yaml" command="load"/>
+
+    <!-- load the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          output="screen" ns="/val" args="ihmc_valkyrie_controller
+                                          joint_state_controller
+                                          torsoYaw_position_controller
+                                          torsoPitch_position_controller
+                                          torsoRoll_position_controller
+                                          lowerNeckPitch_position_controller
+                                          neckYaw_position_controller
+                                          upperNeckPitch_position_controller
+                                          rightShoulderPitch_position_controller
+                                          rightShoulderRoll_position_controller
+                                          rightShoulderYaw_position_controller
+                                          rightElbowPitch_position_controller
+                                          rightForearmYaw_position_controller
+                                          rightWristRoll_position_controller
+                                          rightWristPitch_position_controller
+                                          leftShoulderPitch_position_controller
+                                          leftShoulderRoll_position_controller
+                                          leftShoulderYaw_position_controller
+                                          leftElbowPitch_position_controller
+                                          leftForearmYaw_position_controller
+                                          leftWristRoll_position_controller
+                                          leftWristPitch_position_controller
+                                          rightHipYaw_position_controller
+                                          rightHipRoll_position_controller
+                                          rightHipPitch_position_controller
+                                          rightKneePitch_position_controller
+                                          rightAnklePitch_position_controller
+                                          rightAnkleRoll_position_controller
+                                          leftHipYaw_position_controller
+                                          leftHipRoll_position_controller
+                                          leftHipPitch_position_controller
+                                          leftAnklePitch_position_controller
+                                          leftAnkleRoll_position_controller"/>
+
+    <!-- convert joint states to TF transforms for rviz, etc -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+        <remap from="/joint_states" to="/val/joint_states" />
+    </node>
+
+</launch>
