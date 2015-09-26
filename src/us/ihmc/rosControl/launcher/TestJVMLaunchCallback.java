@@ -10,8 +10,17 @@ public class TestJVMLaunchCallback
    public native void callVoidFunctionWithString(String string);
    public native int callIntFunctionWithBoolean(boolean a, boolean b);
    
+   
+   private int counter = 0;
+   private void add()
+   { 
+      counter++;
+   }
+   
    public void execute(int value)
    {
+      System.out.println("Counter is " + counter);
+      
       System.out.println("VALUE IS " + value);
       
       try

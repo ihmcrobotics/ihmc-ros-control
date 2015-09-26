@@ -8,3 +8,14 @@
         </description>
     </class>
 </library>
+
+<library path="lib/libihmc_ros_control_java_bridge">
+	<class 
+		name="ihmc_ros_control/IHMCRosControlJavaBridge"
+		type="ihmc_ros_control::IHMCRosControlJavaBridge"
+		base_class_type="controller_interface::ControllerBase">
+		<description>
+			Java wrapper to ROS Control
+		</description>
+	</class>	
+</library>

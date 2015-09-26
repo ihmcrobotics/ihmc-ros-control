@@ -23,7 +23,6 @@ class Launcher
 {
 private:
     JavaVM *jvm;
-    JNIEnv *env;
     JavaVMInitArgs vmArguments;
     void displayJNIError(std::string prefix, int error);
 
@@ -31,7 +30,7 @@ private:
 
 public:
     Launcher(std::string vmArguments);
-    bool startVM();
+    bool startVM(std::string workingDirectory = ".");
     bool stopVM();
 
     JavaMethod* getJavaMethod(std::string className, std::string method, std::string signature);
@@ -43,6 +42,10 @@ public:
     jobject createObject(JavaMethod* constructor, ...);
 
     bool registerNativeMethod(std::string className, std::string method, std::string signature, void* functionPointer);
+
+    bool isAssignableFrom(std::string subclass, std::string superclass);
+
+    JNIEnv* getEnv();
 
     ~Launcher();
 };

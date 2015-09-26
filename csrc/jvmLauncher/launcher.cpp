@@ -6,6 +6,10 @@
 
 #include <jni.h>
 #include <vector>
+#include <sys/types.h>
+#include <unistd.h>
+#include <linux/limits.h>
+#include <dirent.h>
 
 void Launcher::displayJNIError(std::string prefix, int error)
 {
@@ -21,8 +25,30 @@ case JNI_EINVAL : std::cerr << prefix << ": invalid arguments" << std::endl; ret
     }
 }
 
+JNIEnv* Launcher::getEnv()
+{
+    JNIEnv* ret;
+
+    if(!jvm)
+    {
+        std::cerr << "JVM not started" << std::endl;
+        return nullptr;
+    }
+    jvm->AttachCurrentThread((void**) &ret, 0);
+    if(!ret)
+    {
+        std::cerr << "Cannot get env" << std::endl;
+        return nullptr;
+    }
+
+    return ret;
+}
+
 void Launcher::call(JavaMethod *method, jobject obj, ...)
 {
+    JNIEnv* env = getEnv();
+    if(!env) return;
+
     if(env->IsInstanceOf(obj, method->clazz))
     {
         va_list arglist;
@@ -38,6 +64,9 @@ void Launcher::call(JavaMethod *method, jobject obj, ...)
 
 void Launcher::call(StaticJavaMethod *method, ...)
 {
+    JNIEnv* env = getEnv();
+    if(!env) return;
+
     va_list arglist;
     va_start(arglist, method);
     env->CallStaticVoidMethodV(method->clazz, method->methodID, arglist);
@@ -64,7 +93,6 @@ Launcher::Launcher(std::string vmOptions)
     {
         javaOptions[i].optionString = new char[options.at(i).length() + 1];
         std::strcpy (javaOptions[i].optionString, options.at(i).c_str());
-        std::cout << javaOptions[i].optionString << "::" << std::endl;
     }
 
     vmArguments.nOptions = 1;
@@ -72,15 +100,51 @@ Launcher::Launcher(std::string vmOptions)
     vmArguments.ignoreUnrecognized = true;
 }
 
-bool Launcher::startVM()
+bool Launcher::startVM(std::string workingDirectory)
 {
+
+
+    DIR* currentDirectory = opendir(".");
+    if(workingDirectory != "." && workingDirectory != "")
+    {
+        if(chdir(workingDirectory.c_str()) == -1)
+        {
+            std::cerr << "Cannot change directory to " << workingDirectory << std::endl;
+            closedir(currentDirectory);
+            return false;
+        }
+
+    }
+
+    char temp [PATH_MAX];
+    if(getcwd(temp, PATH_MAX) == 0); // Ignore return type
+    std::cout << "Starting Java VM from path  " << temp << std::endl;
+
+    JNIEnv* env;
     jint res = JNI_CreateJavaVM(&jvm, (void**) &env, &vmArguments);
-    displayJNIError("Starting Java VM", res);
+    displayJNIError("Started Java VM", res);
+
+    if(workingDirectory != ".")
+    {
+        if(fchdir(dirfd(currentDirectory)) != 0)
+        {
+            std::cerr << "Cannot return to previous working directory" << std::endl;
+        }
+    }
+    closedir(currentDirectory);
+
+    if(getcwd(temp, PATH_MAX) == 0); // Ignore return type
+    std::cout << "Back at path  " << temp << std::endl;
+
+
     return res == JNI_OK;
 }
 
 jclass Launcher::getClass(std::string className)
 {
+    JNIEnv* env = getEnv();
+    if(!env) return nullptr;
+
     std::string classNameCopy(className);
     std::replace (classNameCopy.begin(), classNameCopy.end(), '.', '/');
 
@@ -88,18 +152,15 @@ jclass Launcher::getClass(std::string className)
     if(!cls)
     {
         std::cerr << "Cannot find class " << classNameCopy << std::endl;
-        return NULL;
+        return nullptr;
     }
     return cls;
 }
 
 jobject Launcher::createObject(JavaMethod *constructor, ...)
 {
-    if(!env)
-    {
-        std::cerr << "JVM is not started" << std::endl;
-        return nullptr;
-    }
+    JNIEnv* env = getEnv();
+    if(!env) return nullptr;
 
 
     va_list arglist;
@@ -114,11 +175,8 @@ jobject Launcher::createObject(JavaMethod *constructor, ...)
 StaticJavaMethod* Launcher::getStaticJavaMethod(std::string className, std::string methodName, std::string signature)
 {
 
-    if(!env)
-    {
-        std::cerr << "JVM is not started" << std::endl;
-        return nullptr;
-    }
+    JNIEnv* env = getEnv();
+    if(!env) return nullptr;
 
     jclass cls = getClass(className);
     if(!cls) return nullptr;
@@ -141,11 +199,8 @@ StaticJavaMethod* Launcher::getStaticJavaMethod(std::string className, std::stri
 JavaMethod* Launcher::getJavaMethod(std::string className, std::string methodName, std::string signature)
 {
 
-    if(!env)
-    {
-        std::cerr << "JVM is not started" << std::endl;
-        return nullptr;
-    }
+    JNIEnv* env = getEnv();
+    if(!env) return nullptr;
 
     jclass cls = getClass(className);
     if(!cls) return nullptr;
@@ -167,11 +222,8 @@ JavaMethod* Launcher::getJavaMethod(std::string className, std::string methodNam
 
 bool Launcher::registerNativeMethod(std::string className, std::string methodName, std::string signature, void *functionPointer)
 {
-    if(!env)
-    {
-        std::cerr << "JVM is not started" << std::endl;
-        return false;
-    }
+    JNIEnv* env = getEnv();
+    if(!env) return false;
 
     jclass cls = getClass(className);
     if(!cls) return false;
@@ -185,8 +237,16 @@ bool Launcher::registerNativeMethod(std::string className, std::string methodNam
 
     method[0].fnPtr = functionPointer;
 
-    env->RegisterNatives(cls, method, 1);
-    return true;
+    int res = env->RegisterNatives(cls, method, 1);
+    if(res != JNI_OK)
+    {
+        displayJNIError("Cannot register native method", res);
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 bool Launcher::stopVM()
@@ -201,8 +261,7 @@ bool Launcher::stopVM()
 
     if(res == JNI_OK)
     {
-        env = NULL;
-        jvm = NULL;
+        jvm = nullptr;
         return true;
     }
     else
@@ -210,6 +269,24 @@ bool Launcher::stopVM()
         return false;
     }
 
+}
+
+bool Launcher::isAssignableFrom(std::string subclass, std::string superclass)
+{
+    JNIEnv* env = getEnv();
+    if(!env) return false;
+
+    jclass sub = getClass(subclass);
+    jclass sup = getClass(superclass);
+
+    if(sub && sup)
+    {
+        return env->IsAssignableFrom(sub, sup);
+    }
+    else
+    {
+        return false;
+    }
 }
 
 Launcher::~Launcher()
