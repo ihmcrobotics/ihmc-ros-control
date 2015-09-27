@@ -8,3 +8,14 @@
         </description>
     </class>
 </library>
+
+<library path="lib/libihmc_valkyrie_control_java_bridge">
+	<class
+		name="ihmc_ros_control/IHMCValkyrieControlJavaBridge"
+		type="ihmc_ros_control::IHMCValkyrieControlJavaBridge"
+		base_class_type="controller_interface::ControllerBase">
+	<description>
+		COntroller plugin for Valkyrie
+	</description>
+ 	</class>
+</library>

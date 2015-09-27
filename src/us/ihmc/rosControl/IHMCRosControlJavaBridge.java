@@ -1,4 +1,4 @@
-package us.ihmc.rosControl.launcher;
+package us.ihmc.rosControl;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -9,7 +9,7 @@ public abstract class IHMCRosControlJavaBridge
    private ByteBuffer readBuffer;
    private ByteBuffer writeBuffer;
    
-   protected final native void addJointToBufferN(long thisPtr, String jointName);
+   private final native boolean addJointToBufferN(long thisPtr, String jointName);
    
    private final native ByteBuffer createReadBuffer(long thisPtr);
    private final native ByteBuffer createWriteBuffer(long thisPtr);
@@ -21,8 +21,28 @@ public abstract class IHMCRosControlJavaBridge
    private final ArrayList<NativeUpdateableInterface> updatables = new ArrayList<>();
    
    
+   protected boolean inInit()
+   {
+      return inInit;
+   }
+   
+   protected long getThisPtr()
+   {
+      return thisPtr;
+   }
+   
+   protected void addUpdatable(NativeUpdateableInterface updatable)
+   {
+      if(!inInit)
+      {
+         throw new RuntimeException("Cannot call from outside init()");
+      }
+      
+      updatables.add(updatable);
+   }
+   
    /**
-    * Return a new effortJointInterface. Call from init()
+    * Return a new JointHandle. Call from init()
     * 
     * @param jointName
     * @return
@@ -31,9 +51,12 @@ public abstract class IHMCRosControlJavaBridge
    {
       if(!inInit)
       {
-         throw new RuntimeException("createEffortJointInterface should only be called from init()");
+         throw new RuntimeException("createJointHandle should only be called from init()");
       }
-      addJointToBufferN(thisPtr, jointName);
+      if(!addJointToBufferN(thisPtr, jointName))
+      {
+         throw new IllegalArgumentException("Cannot find joint with name " + jointName);
+      }
       JointHandleImpl jointHandle = new JointHandleImpl(jointName);
       updatables.add(jointHandle);
       return jointHandle;

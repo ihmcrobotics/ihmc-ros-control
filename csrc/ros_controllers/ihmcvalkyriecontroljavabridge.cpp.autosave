@@ -1,0 +1,36 @@
+#include "ihmcvalkyriecontroljavabridge.h"
+
+namespace ihmc_ros_control
+{
+    IHMCValkyrieControlJavaBridge::IHMCValkyrieControlJavaBridge()
+    {
+    }
+
+    bool IHMCValkyrieControlJavaBridge::init(hardware_interface::RobotHW *robot_hw, ros::NodeHandle &controller_nh)
+    {
+        hardware_interface::EffortJointInterface* hw = robot_hw->get<hardware_interface::EffortJointInterface>();
+        if(IHMCRosControlJavaBridge::init(hw, controller_nh))
+        {
+            IHMCRosControlJavaBridge::launcher->isAssignableFrom()
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void IHMCValkyrieControlJavaBridge::starting(const ros::Time &time)
+    {
+        IHMCRosControlJavaBridge::starting(time);
+    }
+
+    void IHMCValkyrieControlJavaBridge::update(const ros::Time &time, const ros::Duration &period)
+    {
+        IHMCRosControlJavaBridge::update(time, period);
+    }
+
+    void IHMCValkyrieControlJavaBridge::stopping(const ros::Time &time)
+    {
+        IHMCRosControlJavaBridge::stopping(time);
+    }
+}

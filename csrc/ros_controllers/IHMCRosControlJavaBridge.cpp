@@ -6,15 +6,16 @@
 #include <pluginlib/class_list_macros.h>
 #include <jni.h>
 #include <hardware_interface/joint_command_interface.h>
-#include <thread>
 
 
-JNIEXPORT void JNICALL addJointToBufferDelegate
+JNIEXPORT jboolean JNICALL addJointToBufferDelegate
   (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
 {
     const char * cstr = env->GetStringUTFChars(str, 0);
-    ((ihmc_ros_control::IHMCRosControlJavaBridge*) thisPtr)->addJointToBuffer(std::string(cstr));
+    jboolean result = ((ihmc_ros_control::IHMCRosControlJavaBridge*) thisPtr)->addJointToBuffer(std::string(cstr));
     env->ReleaseStringUTFChars(str, cstr);
+
+    return result;
 }
 
 
@@ -95,6 +96,45 @@ namespace ihmc_ros_control
         }
     }
 
+    bool IHMCRosControlJavaBridge::startJVM(hardware_interface::EffortJointInterface *hw, std::string jvmArguments, std::string mainClass, std::string workingDirectory)
+    {
+        std::cout << "Starting JVM with arguments: " << jvmArguments << std::endl;
+        launcher = new Launcher(jvmArguments);
+        if(!launcher->startVM(workingDirectory))
+        {
+            std::cerr << "Cannot start Java VM. If you previously ran a Java controller, limitations in the Java JNI Invocation API prohibit restarting the JVM within a single process. " << std::endl;
+            return false;
+        }
+
+
+        updateMethod = launcher->getJavaMethod(rosControlInterfaceClass, "updateFromNative", "(JJ)V");
+        if(!updateMethod)
+        {
+            std::cerr << "Cannot find update method" << std::endl;
+            return false;
+        }
+
+        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "addJointToBufferN", "(JLjava/lang/String;)Z", (void*)&addJointToBufferDelegate))
+        {
+            std::cerr << "Cannot register addJointToBufferN" << std::endl;
+            return false;
+        }
+        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "createReadBuffer", "(J)Ljava/nio/ByteBuffer;", (void*)&createReadBufferDelegate))
+        {
+            std::cerr << "Cannot register createReadBuffer" << std::endl;
+            return false;
+        }
+        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "createWriteBuffer", "(J)Ljava/nio/ByteBuffer;", (void*)&createWriteBufferDelegate))
+        {
+            std::cerr << "Cannot register createWriteBuffer" << std::endl;
+            return false;
+        }
+
+        hardwareInterface = hw;
+
+        return true;
+    }
+
     bool IHMCRosControlJavaBridge::init(hardware_interface::EffortJointInterface *hw, ros::NodeHandle &controller_nh)
     {
         std::string jvmArguments;
@@ -120,34 +160,29 @@ namespace ihmc_ros_control
             workingDirectory = ".";
         }
 
-
-
-        std::cout << "Starting JVM with arguments: " << jvmArguments << std::endl;
-        launcher = new Launcher(jvmArguments);
-        if(!launcher->startVM(workingDirectory))
+        if(startJVM(hw, jvmArguments, mainClass, workingDirectory))
         {
-            std::cerr << "Cannot start Java VM. If you previously ran a Java controller, limitations in the Java JNI Invocation API prohibit restarting the JVM within a single process. " << std::endl;
+
+
+            if(!launcher->isAssignableFrom(mainClass, rosControlInterfaceClass))
+            {
+                std::cerr << mainClass << " does not extend " << rosControlInterfaceClass << std::endl;
+                return false;
+            }
+            return createController(mainClass);
+        }
+        else
+        {
             return false;
         }
+    }
 
-        if(!launcher->isAssignableFrom(mainClass, rosControlInterfaceClass))
-        {
-            std::cerr << mainClass << " does not extend " << rosControlInterfaceClass << std::endl;
-            return false;
-        }
-
-
+    bool IHMCRosControlJavaBridge::createController(std::string mainClass)
+    {
         JavaMethod* constructor = launcher->getJavaMethod(mainClass, "<init>", "()V");
         if(!constructor)
         {
             std::cerr << "Cannot find a no-argument constructor for " << mainClass << std::endl;
-            return false;
-        }
-
-        updateMethod = launcher->getJavaMethod(rosControlInterfaceClass, "updateFromNative", "(JJ)V");
-        if(!updateMethod)
-        {
-            std::cerr << "Cannot find update method" << std::endl;
             return false;
         }
 
@@ -157,25 +192,6 @@ namespace ihmc_ros_control
             std::cerr << "Cannot find init method" << std::endl;
             return false;
         }
-
-        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "addJointToBufferN", "(JLjava/lang/String;)V", (void*)&addJointToBufferDelegate))
-        {
-            std::cerr << "Cannot register addJointToBufferN" << std::endl;
-            return false;
-        }
-        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "createReadBuffer", "(J)Ljava/nio/ByteBuffer;", (void*)&createReadBufferDelegate))
-        {
-            std::cerr << "Cannot register createReadBuffer" << std::endl;
-            return false;
-        }
-        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "createWriteBuffer", "(J)Ljava/nio/ByteBuffer;", (void*)&createWriteBufferDelegate))
-        {
-            std::cerr << "Cannot register createWriteBuffer" << std::endl;
-            return false;
-        }
-
-        hardwareInterface = hw;
-
         controllerObject = launcher->createObject(constructor);
         if(!controllerObject)
         {
@@ -188,8 +204,6 @@ namespace ihmc_ros_control
         launcher->release(initMethod);
 
         launcher->detachCurrentThread();
-
-        return true;
     }
 
     void IHMCRosControlJavaBridge::starting(const ros::Time &time)
@@ -199,6 +213,30 @@ namespace ihmc_ros_control
     void IHMCRosControlJavaBridge::stopping(const ros::Time &time)
     {
         launcher->detachCurrentThread();
+    }
+
+    bool IHMCRosControlJavaBridge::registerNativeMethod(std::string className, std::string method, std::string signature, void *functionPointer)
+    {
+        if(launcher)
+        {
+            return launcher->registerNativeMethod(className, method, signature, functionPointer);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool IHMCRosControlJavaBridge::isAssignableFrom(std::string subclass, std::string superclass)
+    {
+        if(launcher)
+        {
+            return launcher->isAssignableFrom(subclass, superclass);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     jobject IHMCRosControlJavaBridge::createReadBuffer(JNIEnv *env)
@@ -227,12 +265,25 @@ namespace ihmc_ros_control
         return env->NewDirectByteBuffer(commandBuffer, sizeof(double) * writeSize);
     }
 
-    void IHMCRosControlJavaBridge::addJointToBuffer(std::string jointName)
+    bool IHMCRosControlJavaBridge::addJointToBuffer(std::string jointName)
     {
-        const hardware_interface::JointHandle& handle = hardwareInterface->getHandle(jointName);
+        try
+        {
+            const hardware_interface::JointHandle& handle = hardwareInterface->getHandle(jointName);
+            NativeJointHandleHolder* holder = new NativeJointHandleHolder(handle);
+            updateables.push_back(holder);
+            return true;
+        }
+        catch(hardware_interface::HardwareInterfaceException e)
+        {
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
 
-        NativeJointHandleHolder* holder = new NativeJointHandleHolder(handle);
-        updateables.push_back(holder);
+    void IHMCRosControlJavaBridge::addUpdatable(NativeUpdateableInterface* updateable)
+    {
+        updateables.push_back(updateable);
     }
 }
 

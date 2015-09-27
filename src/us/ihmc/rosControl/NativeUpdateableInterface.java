@@ -1,8 +1,8 @@
-package us.ihmc.rosControl.launcher;
+package us.ihmc.rosControl;
 
 import java.nio.ByteBuffer;
 
-interface NativeUpdateableInterface
+public interface NativeUpdateableInterface
 {
    void readFromBuffer(ByteBuffer buffer);
    void writeToBuffer(ByteBuffer buffer);

@@ -1,7 +1,7 @@
 package us.ihmc.rosControl.demo;
 
-import us.ihmc.rosControl.launcher.JointHandle;
-import us.ihmc.rosControl.launcher.IHMCRosControlJavaBridge;
+import us.ihmc.rosControl.IHMCRosControlJavaBridge;
+import us.ihmc.rosControl.JointHandle;
 
 public class RRBotJavaDemo extends IHMCRosControlJavaBridge
 {

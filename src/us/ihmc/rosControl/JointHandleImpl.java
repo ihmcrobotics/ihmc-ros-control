@@ -1,4 +1,4 @@
-package us.ihmc.rosControl.launcher;
+package us.ihmc.rosControl;
 
 import java.nio.ByteBuffer;
 
