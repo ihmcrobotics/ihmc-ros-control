@@ -33,13 +33,44 @@ JNIEXPORT jobject JNICALL createWriteBufferDelegate
 
 namespace ihmc_ros_control
 {
-    IHMCRosControlJavaBridge::IHMCRosControlJavaBridge()
+    IHMCRosControlJavaBridge::IHMCRosControlJavaBridge() :
+            launcher(nullptr), controllerObject(nullptr), updateMethod(nullptr), hardwareInterface(nullptr), stateBuffer(nullptr), commandBuffer(nullptr)
     {
 
     }
 
     IHMCRosControlJavaBridge::~IHMCRosControlJavaBridge()
     {
+        if(launcher)
+        {
+            std::cout << "Stopping VM" << std::endl;
+            launcher->attachCurrentThread();
+            if(controllerObject)
+            {
+                launcher->release(controllerObject);
+            }
+
+            if(updateMethod)
+            {
+                launcher->release(updateMethod);
+            }
+
+            launcher->detachCurrentThread();
+
+            delete launcher;
+        }
+
+        if(stateBuffer)
+        {
+            delete stateBuffer;
+        }
+
+        if(commandBuffer)
+        {
+            delete commandBuffer;
+        }
+
+
         for(std::vector<NativeUpdateableInterface*>::iterator it = updateables.begin() ; it != updateables.end(); ++it)
         {
             delete (*it);
@@ -95,7 +126,7 @@ namespace ihmc_ros_control
         launcher = new Launcher(jvmArguments);
         if(!launcher->startVM(workingDirectory))
         {
-            std::cerr << "Cannot start Java VM" << std::endl;
+            std::cerr << "Cannot start Java VM. If you previously ran a Java controller, limitations in the Java JNI Invocation API prohibit restarting the JVM within a single process. " << std::endl;
             return false;
         }
 
@@ -153,12 +184,21 @@ namespace ihmc_ros_control
         }
         launcher->call(initMethod, controllerObject, (long long) this);
 
+        launcher->release(constructor);
+        launcher->release(initMethod);
+
+        launcher->detachCurrentThread();
+
         return true;
     }
 
     void IHMCRosControlJavaBridge::starting(const ros::Time &time)
     {
-
+        launcher->attachCurrentThread();
+    }
+    void IHMCRosControlJavaBridge::stopping(const ros::Time &time)
+    {
+        launcher->detachCurrentThread();
     }
 
     jobject IHMCRosControlJavaBridge::createReadBuffer(JNIEnv *env)
@@ -172,7 +212,7 @@ namespace ihmc_ros_control
         }
 
         stateBuffer = new double[readSize];
-        return env->NewGlobalRef(env->NewDirectByteBuffer(stateBuffer, sizeof(double) * readSize));
+        return env->NewDirectByteBuffer(stateBuffer, sizeof(double) * readSize);
     }
 
     jobject IHMCRosControlJavaBridge::createWriteBuffer(JNIEnv *env)
@@ -184,7 +224,7 @@ namespace ihmc_ros_control
         }
 
         commandBuffer = new double[writeSize];
-        return env->NewGlobalRef(env->NewDirectByteBuffer(commandBuffer, sizeof(double) * writeSize));
+        return env->NewDirectByteBuffer(commandBuffer, sizeof(double) * writeSize);
     }
 
     void IHMCRosControlJavaBridge::addJointToBuffer(std::string jointName)

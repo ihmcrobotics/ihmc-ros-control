@@ -15,7 +15,6 @@ struct StaticJavaMethod
 {
     jclass clazz;
     jmethodID methodID;
-
 };
 
 
@@ -40,12 +39,18 @@ public:
     void call(JavaMethod*, jobject obj, ...);
 
     jobject createObject(JavaMethod* constructor, ...);
+    void release(jobject object);
+    void release(StaticJavaMethod* method);
+    void release(JavaMethod* method);
 
     bool registerNativeMethod(std::string className, std::string method, std::string signature, void* functionPointer);
 
     bool isAssignableFrom(std::string subclass, std::string superclass);
 
     JNIEnv* getEnv();
+
+    void attachCurrentThread();
+    void detachCurrentThread();
 
     ~Launcher();
 };

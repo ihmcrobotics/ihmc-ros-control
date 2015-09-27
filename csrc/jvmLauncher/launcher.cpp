@@ -15,13 +15,13 @@ void Launcher::displayJNIError(std::string prefix, int error)
 {
     switch(error)
     {
-case JNI_OK: std::cout << prefix << ": success" << std::endl; return;
-case JNI_ERR: std::cerr << prefix << ": unknown error" << std::endl; return;
-case JNI_EDETACHED: std::cerr << prefix << ": thread detached from the VM" << std::endl; return;
-case JNI_EVERSION : std::cerr << prefix << ": JNI version error" << std::endl; return;
-case JNI_ENOMEM : std::cerr << prefix << ": not enough memory" << std::endl; return;
-case JNI_EEXIST : std::cerr << prefix << ": VM already created" << std::endl; return;
-case JNI_EINVAL : std::cerr << prefix << ": invalid arguments" << std::endl; return;
+        case JNI_OK: std::cout << prefix << ": success" << std::endl; return;
+        case JNI_ERR: std::cerr << prefix << ": unknown error" << std::endl; return;
+        case JNI_EDETACHED: std::cerr << prefix << ": thread detached from the VM" << std::endl; return;
+        case JNI_EVERSION : std::cerr << prefix << ": JNI version error" << std::endl; return;
+        case JNI_ENOMEM : std::cerr << prefix << ": not enough memory" << std::endl; return;
+        case JNI_EEXIST : std::cerr << prefix << ": VM already created" << std::endl; return;
+        case JNI_EINVAL : std::cerr << prefix << ": invalid arguments" << std::endl; return;
     }
 }
 
@@ -34,7 +34,7 @@ JNIEnv* Launcher::getEnv()
         std::cerr << "JVM not started" << std::endl;
         return nullptr;
     }
-    jvm->AttachCurrentThread((void**) &ret, 0);
+    jvm->GetEnv((void**) &ret, JNI_VERSION_1_6);
     if(!ret)
     {
         std::cerr << "Cannot get env" << std::endl;
@@ -42,6 +42,29 @@ JNIEnv* Launcher::getEnv()
     }
 
     return ret;
+}
+
+void Launcher::attachCurrentThread()
+{
+    if(!jvm)
+    {
+        std::cerr << "JVM not started" << std::endl;
+        return;
+    }
+
+    JNIEnv* tmp;
+    jvm->AttachCurrentThread((void**)&tmp, 0);
+}
+
+void Launcher::detachCurrentThread()
+{
+    if(!jvm)
+    {
+        std::cerr << "JVM not started" << std::endl;
+        return;
+    }
+
+    jvm->DetachCurrentThread();
 }
 
 void Launcher::call(JavaMethod *method, jobject obj, ...)
@@ -132,12 +155,15 @@ bool Launcher::startVM(std::string workingDirectory)
         }
     }
     closedir(currentDirectory);
-
-    if(getcwd(temp, PATH_MAX) == 0); // Ignore return type
-    std::cout << "Back at path  " << temp << std::endl;
-
-
-    return res == JNI_OK;
+    if(res == JNI_OK)
+    {
+        return true;
+    }
+    else
+    {
+        jvm = nullptr;
+        return false;
+    }
 }
 
 jclass Launcher::getClass(std::string className)
@@ -172,6 +198,14 @@ jobject Launcher::createObject(JavaMethod *constructor, ...)
 
 }
 
+void Launcher::release(jobject object)
+{
+    JNIEnv* env = getEnv();
+    if(!env) return;
+
+    env->DeleteGlobalRef(object);
+}
+
 StaticJavaMethod* Launcher::getStaticJavaMethod(std::string className, std::string methodName, std::string signature)
 {
 
@@ -194,6 +228,18 @@ StaticJavaMethod* Launcher::getStaticJavaMethod(std::string className, std::stri
     method->methodID = mid;
 
     return method;
+}
+
+void Launcher::release(StaticJavaMethod *method)
+{
+    release(method->clazz);
+    delete method;
+}
+
+void Launcher::release(JavaMethod *method)
+{
+    release(method->clazz);
+    delete method;
 }
 
 JavaMethod* Launcher::getJavaMethod(std::string className, std::string methodName, std::string signature)

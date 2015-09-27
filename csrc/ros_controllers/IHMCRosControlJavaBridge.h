@@ -25,6 +25,8 @@ namespace ihmc_ros_control
 
         void starting(const ros::Time &time) override;
 
+        void stopping(const ros::Time&);
+
         jobject createReadBuffer(JNIEnv *env);
         jobject createWriteBuffer(JNIEnv *env);
 

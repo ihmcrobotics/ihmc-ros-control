@@ -8,6 +8,10 @@ namespace ihmc_ros_control
     {
     }
 
+    NativeJointHandleHolder::~NativeJointHandleHolder()
+    {
+
+    }
 
     void NativeJointHandleHolder::readStateIntoBuffer(int& index, double* buffer)
     {

@@ -11,3 +11,4 @@ install(TARGETS
         ihmc_rrbot_controller ihmc_ros_control_java_bridge ihmc_valkyrie_controller
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
+zz

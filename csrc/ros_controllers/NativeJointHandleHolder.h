@@ -12,6 +12,8 @@ namespace ihmc_ros_control
     public:
         NativeJointHandleHolder(hardware_interface::JointHandle handle);
 
+        virtual ~NativeJointHandleHolder();
+
         void readStateIntoBuffer(int& index, double* buffer);
         void writeCommandIntoBuffer(int& index, double* buffer);
 

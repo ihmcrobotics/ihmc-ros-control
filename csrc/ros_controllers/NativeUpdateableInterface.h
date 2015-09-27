@@ -6,7 +6,7 @@ namespace ihmc_ros_control
     class NativeUpdateableInterface
     {
     public:
-        virtual ~NativeUpdateableInterface() = 0;
+        virtual ~NativeUpdateableInterface() {}
 
         virtual void readStateIntoBuffer(int& index, double* buffer) = 0;
         virtual void writeCommandIntoBuffer(int& index, double* buffer) = 0;

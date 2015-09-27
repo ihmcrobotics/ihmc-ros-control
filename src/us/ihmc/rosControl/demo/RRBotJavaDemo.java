@@ -9,7 +9,7 @@ public class RRBotJavaDemo extends IHMCRosControlJavaBridge
    private JointHandle joint1;
    private JointHandle joint2;
    
-   private double qDesiredJoint1 = 1.0;
+   private double qDesiredJoint1 = -1.0;
    private double qDesiredJoint2 = 0.0;
    
    private double joint2Direction = 1.0;
