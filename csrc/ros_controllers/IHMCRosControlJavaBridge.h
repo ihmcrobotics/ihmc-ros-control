@@ -6,7 +6,7 @@
 #include <controller_interface/controller.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <effort_controllers/joint_position_controller.h>
-#include <jvmLauncher/launcher.h>
+#include "../jvmLauncher/launcher.h"
 #include <vector>
 
 namespace ihmc_ros_control

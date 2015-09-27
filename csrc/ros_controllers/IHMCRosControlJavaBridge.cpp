@@ -162,8 +162,6 @@ namespace ihmc_ros_control
 
         if(startJVM(hw, jvmArguments, mainClass, workingDirectory))
         {
-
-
             if(!launcher->isAssignableFrom(mainClass, rosControlInterfaceClass))
             {
                 std::cerr << mainClass << " does not extend " << rosControlInterfaceClass << std::endl;
@@ -204,6 +202,8 @@ namespace ihmc_ros_control
         launcher->release(initMethod);
 
         launcher->detachCurrentThread();
+
+        return true;
     }
 
     void IHMCRosControlJavaBridge::starting(const ros::Time &time)

@@ -1,4 +1,4 @@
-#include <jvmLauncher/launcher.h>
+#include "launcher.h"
 #include <iostream>
 #include <sstream>
 #include <cstring>
