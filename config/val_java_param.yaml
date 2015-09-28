@@ -7,7 +7,7 @@ val:
         jvm_args: "-Djava.class.path=src/ihmcroscontrol/bin"
         main_class: us.ihmc.rosControl.demo.ValkyrieJavaDemo
         working_dir: /home/jesper/workspace/ROS/catkin_ws
-        type: ihmc_valkyrie_control/IHMCValkyrieControlJavaBridge
+        type: ihmc_ros_control/IHMCValkyrieControlJavaBridge
 
 
     torsoYaw_position_controller:

@@ -20,10 +20,10 @@ namespace ihmc_ros_control
         IHMCValkyrieControlJavaBridge();
         virtual ~IHMCValkyrieControlJavaBridge();
 
-        virtual bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& n) override;
-        virtual void starting(const ros::Time& time) override;
-        virtual void update(const ros::Time& time, const ros::Duration& period) override;
-        virtual void stopping(const ros::Time&);
+        bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& n);
+        void starting(const ros::Time& time) override;
+        void update(const ros::Time& time, const ros::Duration& period);
+        void stopping(const ros::Time&);
 
         /**
          * @brief addIMUToBuffer Add an IMU to the buffers, called from Java init()

@@ -49,20 +49,20 @@ namespace ihmc_ros_control
 
         if(!controller_nh.getParam("jvm_args", jvmArguments))
         {
-            std::cerr << "No jvm_args provided." << std::endl;
+            ROS_ERROR("No jvm_args provided.");
             return false;
 
         }
 
         if(!controller_nh.getParam("main_class", mainClass))
         {
-            std::cerr << "No main_class provided" << std::endl;
+            ROS_ERROR("No main_class provided");
             return false;
         }
 
         if(!controller_nh.getParam("working_dir", workingDirectory))
         {
-            std::cout << "No working directory provided. Using current directory" << std::endl;
+            ROS_INFO("No working directory provided. Using current directory");
             workingDirectory = ".";
         }
 
@@ -71,19 +71,19 @@ namespace ihmc_ros_control
 
             if(!ihmcRosControlJavaBridge.isAssignableFrom(mainClass, valkyrieControlInterfaceClass))
             {
-                std::cerr << mainClass << " does not extend " << valkyrieControlInterfaceClass << std::endl;
+                ROS_ERROR_STREAM(mainClass << " does not extend " << valkyrieControlInterfaceClass);
                 return false;
             }
 
             if(!ihmcRosControlJavaBridge.registerNativeMethod(valkyrieControlInterfaceClass, "addIMUToBufferN", "(JLjava/lang/String;)Z", (void*)&addIMUToBufferDelegate))
             {
-                std::cerr << "Cannot register addIMUToBufferN" << std::endl;
+                ROS_ERROR("Cannot register addIMUToBufferN");
                 return false;
             }
 
             if(!ihmcRosControlJavaBridge.registerNativeMethod(valkyrieControlInterfaceClass, "addForceTorqueSensorToBufferN", "(JLjava/lang/String;)Z", (void*)&addForceTorqueSensorToBufferDelegate))
             {
-                std::cerr << "Cannot register addForceTorqueSensorToBufferN" << std::endl;
+                ROS_ERROR("Cannot register addForceTorqueSensorToBufferN");
                 return false;
             }
 
@@ -124,7 +124,7 @@ namespace ihmc_ros_control
         }
         catch(hardware_interface::HardwareInterfaceException e)
         {
-            std::cerr << e.what() << std::endl;
+            ROS_ERROR_STREAM(e.what());
             return false;
         }
     }
@@ -140,7 +140,7 @@ namespace ihmc_ros_control
         }
         catch(hardware_interface::HardwareInterfaceException e)
         {
-            std::cerr << e.what() << std::endl;
+            ROS_ERROR_STREAM(e.what());
             return false;
         }
     }

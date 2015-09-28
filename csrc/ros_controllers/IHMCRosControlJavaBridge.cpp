@@ -44,7 +44,7 @@ namespace ihmc_ros_control
     {
         if(launcher)
         {
-            std::cout << "Stopping VM" << std::endl;
+            ROS_INFO("Stopping VM");
             launcher->attachCurrentThread();
             if(controllerObject)
             {
@@ -98,11 +98,11 @@ namespace ihmc_ros_control
 
     bool IHMCRosControlJavaBridge::startJVM(hardware_interface::EffortJointInterface *hw, std::string jvmArguments, std::string mainClass, std::string workingDirectory)
     {
-        std::cout << "Starting JVM with arguments: " << jvmArguments << std::endl;
+        ROS_INFO_STREAM("Starting JVM with arguments: " << jvmArguments);
         launcher = new Launcher(jvmArguments);
         if(!launcher->startVM(workingDirectory))
         {
-            std::cerr << "Cannot start Java VM. If you previously ran a Java controller, limitations in the Java JNI Invocation API prohibit restarting the JVM within a single process. " << std::endl;
+            ROS_ERROR("Cannot start Java VM. If you previously ran a Java controller, limitations in the Java JNI Invocation API prohibit restarting the JVM within a single process. ");
             return false;
         }
 
@@ -110,23 +110,23 @@ namespace ihmc_ros_control
         updateMethod = launcher->getJavaMethod(rosControlInterfaceClass, "updateFromNative", "(JJ)V");
         if(!updateMethod)
         {
-            std::cerr << "Cannot find update method" << std::endl;
+            ROS_ERROR("Cannot find update method");
             return false;
         }
 
         if(!launcher->registerNativeMethod(rosControlInterfaceClass, "addJointToBufferN", "(JLjava/lang/String;)Z", (void*)&addJointToBufferDelegate))
         {
-            std::cerr << "Cannot register addJointToBufferN" << std::endl;
+            ROS_ERROR("Cannot register addJointToBufferN");
             return false;
         }
         if(!launcher->registerNativeMethod(rosControlInterfaceClass, "createReadBuffer", "(J)Ljava/nio/ByteBuffer;", (void*)&createReadBufferDelegate))
         {
-            std::cerr << "Cannot register createReadBuffer" << std::endl;
+            ROS_ERROR("Cannot register createReadBuffer");
             return false;
         }
         if(!launcher->registerNativeMethod(rosControlInterfaceClass, "createWriteBuffer", "(J)Ljava/nio/ByteBuffer;", (void*)&createWriteBufferDelegate))
         {
-            std::cerr << "Cannot register createWriteBuffer" << std::endl;
+            ROS_ERROR("Cannot register createWriteBuffer");
             return false;
         }
 
@@ -143,20 +143,20 @@ namespace ihmc_ros_control
 
         if(!controller_nh.getParam("jvm_args", jvmArguments))
         {
-            std::cerr << "No jvm_args provided." << std::endl;
+            ROS_ERROR("No jvm_args provided.");
             return false;
 
         }
 
         if(!controller_nh.getParam("main_class", mainClass))
         {
-            std::cerr << "No main_class provided" << std::endl;
+            ROS_ERROR("No main_class provided");
             return false;
         }
 
         if(!controller_nh.getParam("working_dir", workingDirectory))
         {
-            std::cout << "No working directory provided. Using current directory" << std::endl;
+            ROS_INFO("No working directory provided. Using current directory");
             workingDirectory = ".";
         }
 
@@ -164,7 +164,7 @@ namespace ihmc_ros_control
         {
             if(!launcher->isAssignableFrom(mainClass, rosControlInterfaceClass))
             {
-                std::cerr << mainClass << " does not extend " << rosControlInterfaceClass << std::endl;
+                ROS_ERROR_STREAM(mainClass << " does not extend " << rosControlInterfaceClass);
                 return false;
             }
             return createController(mainClass);
@@ -180,20 +180,20 @@ namespace ihmc_ros_control
         JavaMethod* constructor = launcher->getJavaMethod(mainClass, "<init>", "()V");
         if(!constructor)
         {
-            std::cerr << "Cannot find a no-argument constructor for " << mainClass << std::endl;
+            ROS_ERROR_STREAM("Cannot find a no-argument constructor for " << mainClass);
             return false;
         }
 
         JavaMethod* initMethod = launcher->getJavaMethod(rosControlInterfaceClass, "initFromNative", "(J)V");
         if(!initMethod)
         {
-            std::cerr << "Cannot find init method" << std::endl;
+            ROS_ERROR("Cannot find init method");
             return false;
         }
         controllerObject = launcher->createObject(constructor);
         if(!controllerObject)
         {
-            std::cerr << "Cannot create controller object" << std::endl;
+            ROS_ERROR("Cannot create controller object");
             return false;
         }
         launcher->call(initMethod, controllerObject, (long long) this);
@@ -276,7 +276,7 @@ namespace ihmc_ros_control
         }
         catch(hardware_interface::HardwareInterfaceException e)
         {
-            std::cerr << e.what() << std::endl;
+            ROS_ERROR_STREAM(e.what());
             return false;
         }
     }
