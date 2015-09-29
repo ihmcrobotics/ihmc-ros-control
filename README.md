@@ -6,6 +6,10 @@ Provides a bridge between Java and ROS Control.
 
 Checkout in your catkin_ws/src directory and run catkin_make in catkin_ws.
 
+If CMake does not find JNI, export JAVA_HOME before running catkin_make
+	
+	export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
+
 ## Writing controllers
 
 Add the following dependency to your gradle dependencies

@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-catkin_package(INCLUDE_DIRS include LIBRARIES ${PROJECT_NAME})
+catkin_package(LIBRARIES ${PROJECT_NAME})
 
 find_package(JNI REQUIRED)
 
