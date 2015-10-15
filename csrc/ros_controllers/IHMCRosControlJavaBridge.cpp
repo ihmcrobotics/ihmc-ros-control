@@ -167,7 +167,7 @@ namespace ihmc_ros_control
                 ROS_ERROR_STREAM(mainClass << " does not extend " << rosControlInterfaceClass);
                 return false;
             }
-            return createController(mainClass);
+            return createController(mainClass, (long long) this);
         }
         else
         {
@@ -175,7 +175,7 @@ namespace ihmc_ros_control
         }
     }
 
-    bool IHMCRosControlJavaBridge::createController(std::string mainClass)
+    bool IHMCRosControlJavaBridge::createController(std::string mainClass, long long delegatePtr)
     {
         JavaMethod* constructor = launcher->getJavaMethod(mainClass, "<init>", "()V");
         if(!constructor)
@@ -184,7 +184,7 @@ namespace ihmc_ros_control
             return false;
         }
 
-        JavaMethod* initMethod = launcher->getJavaMethod(rosControlInterfaceClass, "initFromNative", "(J)V");
+        JavaMethod* initMethod = launcher->getJavaMethod(rosControlInterfaceClass, "initFromNative", "(JJ)V");
         if(!initMethod)
         {
             ROS_ERROR("Cannot find init method");
@@ -196,7 +196,7 @@ namespace ihmc_ros_control
             ROS_ERROR("Cannot create controller object");
             return false;
         }
-        launcher->call(initMethod, controllerObject, (long long) this);
+        launcher->call(initMethod, controllerObject, (long long) this, delegatePtr);
 
         launcher->release(constructor);
         launcher->release(initMethod);

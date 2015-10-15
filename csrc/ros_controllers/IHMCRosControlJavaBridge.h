@@ -49,7 +49,7 @@ namespace ihmc_ros_control
          * @brief createController creates the controller object
          * @return
          */
-        bool createController(std::string mainClass);
+        bool createController(std::string mainClass, long long delegatePtr);
 
         /**
          * @brief starting Called from the Realtime Thread before the first update

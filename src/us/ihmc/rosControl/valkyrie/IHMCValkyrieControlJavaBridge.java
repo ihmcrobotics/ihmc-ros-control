@@ -21,7 +21,7 @@ public abstract class IHMCValkyrieControlJavaBridge extends IHMCRosControlJavaBr
       {
          throw new RuntimeException("createIMUHandle should only be called from init()");
       }
-      if(!addIMUToBufferN(getThisPtr(), imuName))
+      if(!addIMUToBufferN(getDelegatePtr(), imuName))
       {
          throw new IllegalArgumentException("Cannot find IMU with name " + imuName);
       }
@@ -42,7 +42,7 @@ public abstract class IHMCValkyrieControlJavaBridge extends IHMCRosControlJavaBr
       {
          throw new RuntimeException("createForceTorqueSensorHandle should only be called from init()");
       }
-      if(!addForceTorqueSensorToBufferN(getThisPtr(), forceTorqueSensorName))
+      if(!addForceTorqueSensorToBufferN(getDelegatePtr(), forceTorqueSensorName))
       {
          throw new IllegalArgumentException("Cannot find force torque sensor with name " + forceTorqueSensorName);
       }

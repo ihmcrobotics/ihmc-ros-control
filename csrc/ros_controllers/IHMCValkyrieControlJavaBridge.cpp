@@ -90,7 +90,7 @@ namespace ihmc_ros_control
             imuSensorInterface = robot_hw->get<hardware_interface::ImuSensorInterface>();
             forceTorqueSensorInterface = robot_hw->get<hardware_interface::ForceTorqueSensorInterface>();
 
-            return ihmcRosControlJavaBridge.createController(mainClass);
+            return ihmcRosControlJavaBridge.createController(mainClass, (long long) this);
         }
         else
         {

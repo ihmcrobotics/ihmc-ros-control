@@ -16,6 +16,7 @@ public abstract class IHMCRosControlJavaBridge
    
    private boolean inInit = false;
    private long thisPtr;
+   private long delegatePtr;
 
    
    private final ArrayList<NativeUpdateableInterface> updatables = new ArrayList<>();
@@ -26,9 +27,9 @@ public abstract class IHMCRosControlJavaBridge
       return inInit;
    }
    
-   protected long getThisPtr()
+   protected long getDelegatePtr()
    {
-      return thisPtr;
+      return delegatePtr;
    }
    
    protected void addUpdatable(NativeUpdateableInterface updatable)
@@ -63,11 +64,12 @@ public abstract class IHMCRosControlJavaBridge
    }
    
    
-   void initFromNative(long thisPtr)
+   void initFromNative(long thisPtr, long delegatePtr)
    {
       try
       {
          this.thisPtr = thisPtr;
+         this.delegatePtr = delegatePtr;
          inInit = true;
          init();
          inInit = false;
