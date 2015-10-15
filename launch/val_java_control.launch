@@ -5,7 +5,7 @@
     <rosparam file="$(find ihmc_ros_control)/config/val_java_param.yaml" command="load"/>
 
     <!-- load the controllers -->
-    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    <node name="$(anon controller_spawner)" pkg="controller_manager" type="spawner" respawn="false"
           output="screen" args="ihmc_valkyrie_control_java_bridge
                                           "/>
 </launch>
