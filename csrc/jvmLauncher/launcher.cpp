@@ -337,8 +337,8 @@ bool Launcher::isAssignableFrom(std::string subclass, std::string superclass)
 
 Launcher::~Launcher()
 {
-    if(jvm)
-        stopVM();
+//    if(jvm)
+//        stopVM();
 
     delete vmArguments.options;
 }
