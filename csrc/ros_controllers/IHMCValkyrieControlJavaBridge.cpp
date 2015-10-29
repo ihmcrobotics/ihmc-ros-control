@@ -33,15 +33,31 @@ namespace ihmc_ros_control
     IHMCValkyrieControlJavaBridge::IHMCValkyrieControlJavaBridge() :
         ihmcRosControlJavaBridge()
     {
+        state_ = CONSTRUCTED;
     }
 
     IHMCValkyrieControlJavaBridge::~IHMCValkyrieControlJavaBridge()
     {
     }
 
-    bool IHMCValkyrieControlJavaBridge::init(hardware_interface::RobotHW *robot_hw, ros::NodeHandle &controller_nh)
+    bool IHMCValkyrieControlJavaBridge::initRequest(hardware_interface::RobotHW* robot_hw,
+                             ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
+                             std::set<std::string> &claimed_resources)
     {
+
+        // check if construction finished cleanly
+        if (state_ != CONSTRUCTED){
+          ROS_ERROR("Cannot initialize this controller because it failed to be constructed");
+          return false;
+        }
+
         hardware_interface::EffortJointInterface* hw = robot_hw->get<hardware_interface::EffortJointInterface>();
+        if (!hw)
+        {
+          ROS_ERROR("Cannot get hardware interface of type hardware_interface::EffortJointInterface");
+          return false;
+        }
+        hw->clearClaims();
 
         std::string jvmArguments;
         std::string mainClass;
@@ -90,12 +106,19 @@ namespace ihmc_ros_control
             imuSensorInterface = robot_hw->get<hardware_interface::ImuSensorInterface>();
             forceTorqueSensorInterface = robot_hw->get<hardware_interface::ForceTorqueSensorInterface>();
 
-            return ihmcRosControlJavaBridge.createController(mainClass, (long long) this);
+            if(ihmcRosControlJavaBridge.createController(mainClass, (long long) this))
+            {
+                claimed_resources = hw->getClaims();
+                hw->clearClaims();
+
+                // success
+                state_ = INITIALIZED;
+                return true;
+
+            }
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     void IHMCValkyrieControlJavaBridge::starting(const ros::Time &time)
