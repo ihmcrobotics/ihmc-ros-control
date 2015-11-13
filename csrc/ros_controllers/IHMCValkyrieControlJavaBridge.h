@@ -3,7 +3,7 @@
 
 #include "IHMCRosControlJavaBridge.h"
 
-#include <controller_interface/controller_base.h>
+#include <controller_interface/controller.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/imu_sensor_interface.h>
 #include <hardware_interface/force_torque_sensor_interface.h>
@@ -14,7 +14,7 @@ namespace ihmc_ros_control
 
 
     class IHMCValkyrieControlJavaBridge :
-            public controller_interface::ControllerBase
+            public controller_interface::Controller<hardware_interface::EffortJointInterface>
     {
     public:
         IHMCValkyrieControlJavaBridge();
@@ -39,12 +39,10 @@ namespace ihmc_ros_control
          */
         bool addForceTorqueSensorToBuffer(std::string forceTorqueSensorName);
 
+    protected:
         virtual bool initRequest(hardware_interface::RobotHW* robot_hw,
-                                 ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
-
-                                 std::set<std::string> &claimed_resources) override;
-
-        virtual std::string getHardwareInterfaceType() const { return hardware_interface::internal::demangledTypeName<hardware_interface::EffortJointInterface>(); }
+                                 ros::NodeHandle& root_nh, ros::NodeHandle& controller_nh,
+                                 std::set<std::string>& claimed_resources) override;
 
 
     private:
