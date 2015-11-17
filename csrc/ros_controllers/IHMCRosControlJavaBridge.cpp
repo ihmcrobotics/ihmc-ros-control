@@ -184,7 +184,7 @@ namespace ihmc_ros_control
             return false;
         }
 
-        JavaMethod* initMethod = launcher->getJavaMethod(rosControlInterfaceClass, "initFromNative", "(JJ)V");
+        JavaMethod* initMethod = launcher->getJavaMethod(rosControlInterfaceClass, "initFromNative", "(JJ)Z");
         if(!initMethod)
         {
             ROS_ERROR("Cannot find init method");
@@ -196,14 +196,14 @@ namespace ihmc_ros_control
             ROS_ERROR("Cannot create controller object");
             return false;
         }
-        launcher->call(initMethod, controllerObject, (long long) this, delegatePtr);
+        bool returnValue = launcher->callBooleanMethod(initMethod, controllerObject, (long long) this, delegatePtr);
 
         launcher->release(constructor);
         launcher->release(initMethod);
 
         launcher->detachCurrentThread();
 
-        return true;
+        return returnValue;
     }
 
     void IHMCRosControlJavaBridge::starting(const ros::Time &time)

@@ -67,6 +67,27 @@ void Launcher::detachCurrentThread()
     jvm->DetachCurrentThread();
 }
 
+bool Launcher::callBooleanMethod(JavaMethod *method, jobject obj, ...)
+{
+    JNIEnv* env = getEnv();
+    if(!env) return false;
+
+    bool returnValue = false;
+    if(env->IsInstanceOf(obj, method->clazz))
+    {
+        va_list arglist;
+        va_start(arglist, obj);
+        returnValue = env->CallBooleanMethodV(obj, method->methodID, arglist);
+        va_end(arglist);
+    }
+    else
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": Unexpected object type" << std::endl;
+    }
+
+    return returnValue;
+}
+
 void Launcher::call(JavaMethod *method, jobject obj, ...)
 {
     JNIEnv* env = getEnv();

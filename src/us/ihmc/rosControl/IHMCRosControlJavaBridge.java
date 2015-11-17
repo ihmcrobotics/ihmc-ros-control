@@ -64,7 +64,7 @@ public abstract class IHMCRosControlJavaBridge
    }
    
    
-   void initFromNative(long thisPtr, long delegatePtr)
+   boolean initFromNative(long thisPtr, long delegatePtr)
    {
       try
       {
@@ -79,10 +79,13 @@ public abstract class IHMCRosControlJavaBridge
          
          readBuffer.order(ByteOrder.nativeOrder());
          writeBuffer.order(ByteOrder.nativeOrder());
+         
+         return true;
       }
       catch(Throwable e)
       {
          e.printStackTrace();
+         return false;
       }
    }
    

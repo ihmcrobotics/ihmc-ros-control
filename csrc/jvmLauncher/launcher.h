@@ -37,6 +37,7 @@ public:
 
     void call(StaticJavaMethod*, ...);
     void call(JavaMethod*, jobject obj, ...);
+    bool callBooleanMethod(JavaMethod*, jobject obj, ...);
 
     jobject createObject(JavaMethod* constructor, ...);
     void release(jobject object);
