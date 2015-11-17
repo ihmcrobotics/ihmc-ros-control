@@ -8,14 +8,35 @@
 #include <hardware_interface/joint_command_interface.h>
 
 
+JNIEXPORT void rosError(JNIEnv *env, jclass, jstring error) {
+  const char *cerror = env->GetStringUTFChars(error, NULL);
+  if (error != NULL)
+  {
+    ROS_ERROR("%s", cerror);
+    env->ReleaseStringUTFChars(error, cerror);
+  }
+}
+
+JNIEXPORT void rosInfo(JNIEnv *env, jclass, jstring info) {
+    const char *cinfo = env->GetStringUTFChars(info, NULL);
+    if (cinfo != NULL)
+    {
+        ROS_INFO("%s", cinfo);
+        env->ReleaseStringUTFChars(info, cinfo);
+    }
+}
+
 JNIEXPORT jboolean JNICALL addJointToBufferDelegate
   (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
 {
     const char * cstr = env->GetStringUTFChars(str, 0);
-    jboolean result = ((ihmc_ros_control::IHMCRosControlJavaBridge*) thisPtr)->addJointToBuffer(std::string(cstr));
-    env->ReleaseStringUTFChars(str, cstr);
-
-    return result;
+    if(cstr != NULL)
+    {
+        jboolean result = ((ihmc_ros_control::IHMCRosControlJavaBridge*) thisPtr)->addJointToBuffer(std::string(cstr));
+        env->ReleaseStringUTFChars(str, cstr);
+        return result;
+    }
+    return false;
 }
 
 
@@ -96,7 +117,7 @@ namespace ihmc_ros_control
         }
     }
 
-    bool IHMCRosControlJavaBridge::startJVM(hardware_interface::EffortJointInterface *hw, std::string jvmArguments, std::string mainClass, std::string workingDirectory)
+    bool IHMCRosControlJavaBridge::startJVM(hardware_interface::EffortJointInterface *hw, std::string jvmArguments, std::string workingDirectory)
     {
         ROS_INFO_STREAM("Starting JVM with arguments: " << jvmArguments);
         launcher = new Launcher(jvmArguments);
@@ -111,6 +132,18 @@ namespace ihmc_ros_control
         if(!updateMethod)
         {
             ROS_ERROR("Cannot find update method");
+            return false;
+        }
+
+        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "rosError", "(Ljava/lang/String;)V", (void*)&rosError))
+        {
+            ROS_ERROR("Cannot register rosError");
+            return false;
+        }
+
+        if(!launcher->registerNativeMethod(rosControlInterfaceClass, "rosInfo", "(Ljava/lang/String;)V", (void*)&rosInfo))
+        {
+            ROS_ERROR("Cannot register rosInfo");
             return false;
         }
 
@@ -160,7 +193,7 @@ namespace ihmc_ros_control
             workingDirectory = ".";
         }
 
-        if(startJVM(hw, jvmArguments, mainClass, workingDirectory))
+        if(startJVM(hw, jvmArguments, workingDirectory))
         {
             if(!launcher->isAssignableFrom(mainClass, rosControlInterfaceClass))
             {

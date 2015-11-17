@@ -5,7 +5,6 @@ joint_state_controller:
 ihmc_valkyrie_control_java_bridge:
     jvm_args: "-Djava.class.path=ValkyrieController.jar -XX:+UseSerialGC -Xmx10g -Xms10g -XX:NewSize=8g -XX:MaxNewSize=8g -XX:CompileThreshold=1000 -verbosegc -Djava.library.path=lib/"
     main_class: us.ihmc.valkyrieRosControl.ValkyrieRosControlSliderBoard
-    working_dir: /home/val/valkyrie/
     type: ihmc_ros_control/IHMCValkyrieControlJavaBridge
 
 

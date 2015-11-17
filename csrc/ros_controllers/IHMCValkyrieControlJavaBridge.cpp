@@ -12,20 +12,34 @@ JNIEXPORT jboolean JNICALL addIMUToBufferDelegate
   (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
 {
     const char * cstr = env->GetStringUTFChars(str, 0);
-    jboolean result = ((ihmc_ros_control::IHMCValkyrieControlJavaBridge*) thisPtr)->addIMUToBuffer(std::string(cstr));
-    env->ReleaseStringUTFChars(str, cstr);
+    if(cstr != NULL)
+    {
+        jboolean result = ((ihmc_ros_control::IHMCValkyrieControlJavaBridge*) thisPtr)->addIMUToBuffer(std::string(cstr));
+        env->ReleaseStringUTFChars(str, cstr);
 
-    return result;
+        return result;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 JNIEXPORT jboolean JNICALL addForceTorqueSensorToBufferDelegate
   (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
 {
     const char * cstr = env->GetStringUTFChars(str, 0);
-    jboolean result = ((ihmc_ros_control::IHMCValkyrieControlJavaBridge*) thisPtr)->addForceTorqueSensorToBuffer(std::string(cstr));
-    env->ReleaseStringUTFChars(str, cstr);
+    if(cstr != NULL)
+    {
+        jboolean result = ((ihmc_ros_control::IHMCValkyrieControlJavaBridge*) thisPtr)->addForceTorqueSensorToBuffer(std::string(cstr));
+        env->ReleaseStringUTFChars(str, cstr);
 
-    return result;
+        return result;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 namespace ihmc_ros_control
@@ -82,7 +96,7 @@ namespace ihmc_ros_control
             workingDirectory = ".";
         }
 
-        if(ihmcRosControlJavaBridge.startJVM(hw, jvmArguments, mainClass, workingDirectory))
+        if(ihmcRosControlJavaBridge.startJVM(hw, jvmArguments, workingDirectory))
         {
 
             if(!ihmcRosControlJavaBridge.isAssignableFrom(mainClass, valkyrieControlInterfaceClass))

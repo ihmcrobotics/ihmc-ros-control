@@ -1,5 +1,7 @@
 package us.ihmc.rosControl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -11,6 +13,9 @@ public abstract class IHMCRosControlJavaBridge
    
    private final native boolean addJointToBufferN(long thisPtr, String jointName);
    
+   private final native static void rosError(String error);
+   private final native static void rosInfo(String msg);
+   
    private final native ByteBuffer createReadBuffer(long thisPtr);
    private final native ByteBuffer createWriteBuffer(long thisPtr);
    
@@ -21,6 +26,14 @@ public abstract class IHMCRosControlJavaBridge
    
    private final ArrayList<NativeUpdateableInterface> updatables = new ArrayList<>();
    
+   
+   protected IHMCRosControlJavaBridge()
+   {
+      rosInfo("Binding System.out to ROS_INFO\n");
+      System.setOut(new PrintStream(new RosInfoOutputStream()));
+      rosError("Binding system.err to ROS_ERROR\n");
+      System.setErr(new PrintStream(new RosErrorOutputStream()));
+   }
    
    protected boolean inInit()
    {
@@ -126,4 +139,26 @@ public abstract class IHMCRosControlJavaBridge
     * This method gets called cyclically in the update.
     */
    protected abstract void doControl(long time, long duration);
+   
+   
+   private static class RosInfoOutputStream extends ByteArrayOutputStream
+   {  
+      @Override
+      public synchronized void flush()
+      {
+         rosInfo(toString());
+         reset();
+      }
+      
+   }
+   private static class RosErrorOutputStream extends ByteArrayOutputStream
+   {  
+      @Override
+      public synchronized void flush()
+      {
+         rosError(toString());
+         reset();
+      }
+      
+   }
 }

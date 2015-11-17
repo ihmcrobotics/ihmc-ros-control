@@ -214,8 +214,14 @@ jobject Launcher::createObject(JavaMethod *constructor, ...)
     va_start(arglist, constructor);
     jobject newObject = env->NewObjectV(constructor->clazz, constructor->methodID, arglist);
     va_end(arglist);
-
-    return env->NewGlobalRef(newObject);
+    if(newObject)
+    {
+        return env->NewGlobalRef(newObject);
+    }
+    else
+    {
+        return nullptr;
+    }
 
 }
 

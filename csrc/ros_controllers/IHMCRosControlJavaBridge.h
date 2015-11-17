@@ -43,7 +43,7 @@ namespace ihmc_ros_control
          * @param workingDirectory
          * @return
          */
-        bool startJVM(hardware_interface::EffortJointInterface *hw, std::string jvmArguments, std::string mainClass, std::string workingDirectory);
+        bool startJVM(hardware_interface::EffortJointInterface *hw, std::string jvmArguments, std::string workingDirectory);
 
         /**
          * @brief createController creates the controller object
