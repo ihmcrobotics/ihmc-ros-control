@@ -1,13 +1,15 @@
 package us.ihmc.rosControl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import us.ihmc.rosControl.util.CallbackPrintStream;
+
 public abstract class IHMCRosControlJavaBridge
 {
+   
+   
    private ByteBuffer readBuffer;
    private ByteBuffer writeBuffer;
    
@@ -29,10 +31,25 @@ public abstract class IHMCRosControlJavaBridge
    
    protected IHMCRosControlJavaBridge()
    {
-      rosInfo("Binding System.out to ROS_INFO\n");
-      System.setOut(new PrintStream(new RosInfoOutputStream()));
-      rosError("Binding system.err to ROS_ERROR\n");
-      System.setErr(new PrintStream(new RosErrorOutputStream()));
+      System.setOut(new CallbackPrintStream()
+      {
+         
+         @Override
+         public void outputLine(String message)
+         {
+            rosInfo(message);
+         }
+      });
+      
+      System.setErr(new CallbackPrintStream()
+      {
+         
+         @Override
+         public void outputLine(String message)
+         {
+            rosError(message);
+         }
+      });
    }
    
    protected boolean inInit()
@@ -131,34 +148,19 @@ public abstract class IHMCRosControlJavaBridge
     * This function gets called when the controller gets initialized. Use this function to setup
     * the effort interfaces.
     * 
+    * If an Exception gets thrown, the controller will shutdown.
+    * 
     * @see createEffortJointInterface
     */
    protected abstract void init();
    
    /**
     * This method gets called cyclically in the update.
+    * 
+    * Exceptions will get caught and output to ROS_ERROR. Execution will continue.
+    * 
     */
    protected abstract void doControl(long time, long duration);
    
    
-   private static class RosInfoOutputStream extends ByteArrayOutputStream
-   {  
-      @Override
-      public synchronized void flush()
-      {
-         rosInfo(toString());
-         reset();
-      }
-      
-   }
-   private static class RosErrorOutputStream extends ByteArrayOutputStream
-   {  
-      @Override
-      public synchronized void flush()
-      {
-         rosError(toString());
-         reset();
-      }
-      
-   }
 }

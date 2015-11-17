@@ -1,9 +1,0 @@
-rrbot:
-  # Publish all joint states -----------------------------------
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 50
-
-  # Position Controllers ---------------------------------------
-  ihmc_rrbot_controller:
-    type: ihmc_ros_control/RRBotSimpleTestPositionController

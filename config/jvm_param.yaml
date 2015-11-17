@@ -2,6 +2,5 @@ rrbot:
     ihmc_ros_control_java_bridge:
         jvm_args: "-Djava.class.path=src/ihmcroscontrol/bin"
         main_class: us.ihmc.rosControl.demo.RRBotJavaDemo
-        working_dir: /home/jesper/workspace/ROS/catkin_ws
         type: ihmc_ros_control/IHMCRosControlJavaBridge
 

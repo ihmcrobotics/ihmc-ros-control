@@ -19,6 +19,8 @@ public class RRBotJavaDemo extends IHMCRosControlJavaBridge
    {
       joint1 = createJointHandle("joint1");
       joint2 = createJointHandle("joint2");
+
+      System.out.println("Finish loading RRBot controller");
    }
 
    @Override
