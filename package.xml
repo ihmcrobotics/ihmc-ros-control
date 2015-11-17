@@ -16,11 +16,11 @@
   <build_depend>controller_interface</build_depend>
   <build_depend>hardware_interface</build_depend>
   <build_depend>effort_controllers</build_depend>
-  <build_depend>val_controller_interface</build_depend>
+  <!--build_depend>val_controller_interface</build_depend-->
   <run_depend>controller_interface</run_depend>
   <run_depend>hardware_interface</run_depend>
   <run_depend>effort_controllers</run_depend>
-  <run_depend>val_controller_interface</run_depend>
+  <!--run_depend>val_controller_interface</run_depend-->
 
   <export>
     <controller_interface plugin="${prefix}/rrbot_controller_plugin.xml"/>
