@@ -1,14 +1,3 @@
-<library path="lib/libihmc_valkyrie_controller">
-    <class
-            name="ihmc_ros_control/ValkyrieForwardCommandController"
-            type="ihmc_ros_control::ValkyrieForwardCommandController"
-            base_class_type="controller_interface::ControllerBase">
-        <description>
-            Testing things out.
-        </description>
-    </class>
-</library>
-
 <library path="lib/libihmc_valkyrie_control_java_bridge">
 	<class
 		name="ihmc_ros_control/IHMCValkyrieControlJavaBridge"
