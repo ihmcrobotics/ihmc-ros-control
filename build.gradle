@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = '0.2'
+version = '0.2.1'
 
 sourceSets {
 	main {
