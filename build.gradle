@@ -1,3 +1,7 @@
+plugins {
+   id 'us.ihmc.gradle.ihmc-build' version '0.0.5'
+}
+
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
