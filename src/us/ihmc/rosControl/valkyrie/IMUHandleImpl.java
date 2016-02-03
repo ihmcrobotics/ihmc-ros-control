@@ -148,10 +148,10 @@ class IMUHandleImpl implements IMUHandle, NativeUpdateableInterface
    @Override
    public void readFromBuffer(ByteBuffer buffer)
    {
+      q_w = buffer.getDouble();
       q_x = buffer.getDouble();
       q_y = buffer.getDouble();
       q_z = buffer.getDouble();
-      q_w = buffer.getDouble();
       
       for(int i = 0; i < orientationCovariance.length; i++)
       {

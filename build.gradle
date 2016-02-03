@@ -1,9 +1,13 @@
-apply plugin: 'java'
+plugins {
+   id 'us.ihmc.gradle.ihmc-build' version '0.0.9'
+}
+
+
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = '0.2'
+version = '0.2.1'
 
 sourceSets {
 	main {
