@@ -14,7 +14,7 @@ If CMake does not find JNI, export JAVA_HOME before running catkin_make
 
 Add the following dependency to your gradle dependencies
 
-compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.1'
+compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.2.1'
 
 Implement either "IHMCRosControlJavaBridge" or "IHMCValkyrieControlJavaBridge", depending on if you want to control only joints or have access to the IMU and force torque sensors as well.
 
