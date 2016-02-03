@@ -37,15 +37,15 @@ publishing {
 		mavenJava(MavenPublication) {
 
 			groupId 'us.ihmc'
-			artifactId 'IHMCRosControl'
+			artifactId project.name
 			version "$version"
 			from components.java
 			
 			pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'IHMCRosControl'
-                    url 'https://stash.ihmc.us/projects/JNI/repos/ihmcroscontrol'
+                    name project.name
+                    url 'https://github.com/ihmcrobotics/ihmc-ros-control'
                     licenses {
                         license {
                             name 'The Apache Software License, Version 2.0'
