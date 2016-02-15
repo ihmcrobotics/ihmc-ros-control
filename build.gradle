@@ -1,5 +1,5 @@
 plugins {
-   id 'us.ihmc.gradle.ihmc-build' version '0.0.12'
+   id 'us.ihmc.gradle.ihmc-build' version '0.0.13'
 }
 
 
@@ -78,15 +78,5 @@ publishing {
 			}
 		}
 
-	}
-
-	repositories {
-		maven {
-			credentials {
-				username project.hasProperty('nexus_username')?"${nexus_username}":"invalid"
-				password project.hasProperty('nexus_password')?"${nexus_password}":"invalid"
-			}
-			url "https://bengal.ihmc.us/nexus/content/repositories/releases"
-		}
 	}
 }
