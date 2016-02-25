@@ -9,12 +9,18 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 version = '0.2.1'
 
-sourceSets {
-	main {
-		java {
-			srcDirs = ['src']
-		}
-	}
+project.ext.fullVersion = version
+project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-hierarchical-kinematics"
+project.ext.licenseURL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+project.ext.licenseName = "Apache License, Version 2.0"
+project.ext.bintrayLicenseName = "Apache-2.0"
+
+repositories {
+  jcenter()
+  mavenCentral()
+  maven {
+      url  "http://dl.bintray.com/ihmcrobotics/maven-release"
+  }
 }
 
 task sourceJar(type: Jar) {
@@ -28,7 +34,7 @@ jar {
       "Implementation-Title": project.name,
       "Implementation-Version": project.version,
       "Implementation-Vendor": "IHMC",
-      
+
       "Bundle-Name": project.name,
       "Bundle-Version": project.version,
       "Bundle-License": "http://www.apache.org/licenses/LICENSE-2.0.txt",
@@ -44,7 +50,7 @@ publishing {
 			artifactId project.name
 			version "$version"
 			from components.java
-			
+
 			pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
@@ -72,21 +78,13 @@ publishing {
                 }
 
         	}
-			
+
 			artifact sourceJar {
 				classifier "sources"
 			}
 		}
-
-	}
-
-	repositories {
-		maven {
-			credentials {
-				username project.hasProperty('nexus_username')?"${nexus_username}":"invalid"
-				password project.hasProperty('nexus_password')?"${nexus_password}":"invalid"
-			}
-			url "https://bengal.ihmc.us/nexus/content/repositories/releases"
-		}
 	}
 }
+
+def labels = ['ihmc', 'robotics', 'java', 'ros', 'ros_control']
+ihmc.configureForIHMCOpenSourceBintrayPublish(false, "mavenJava", "maven-release", labels)
