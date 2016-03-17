@@ -1,7 +1,7 @@
 <launch>
 
     <!-- Load joint controller configurations from YAML file to parameter server -->
-    <rosparam file="$(find ihmc_ros_control)/config/jvm_param.yaml" command="load"/>
+    <rosparam file="$(find ihmc_ros_control)/configurations/jvm_param.yaml" command="load"/>
 
     <param name="rrbot/ihmc_ros_control_java_bridge/working_dir" value="/home/jesper/workspace/ROS/catkin_ws" />
     <!-- load the controllers -->

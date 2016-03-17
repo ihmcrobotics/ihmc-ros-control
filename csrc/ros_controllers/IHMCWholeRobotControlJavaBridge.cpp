@@ -1,4 +1,4 @@
-#include "IHMCValkyrieControlJavaBridge.h"
+#include "IHMCWholeRobotControlJavaBridge.h"
 
 #include "NativeIMUHandleHolder.h"
 #include "NativeForceTorqueSensorHandleHolder.h"
@@ -14,7 +14,7 @@ JNIEXPORT jboolean JNICALL addIMUToBufferDelegate
     const char * cstr = env->GetStringUTFChars(str, 0);
     if(cstr != NULL)
     {
-        jboolean result = ((ihmc_ros_control::IHMCValkyrieControlJavaBridge*) thisPtr)->addIMUToBuffer(std::string(cstr));
+        jboolean result = ((ihmc_ros_control::IHMCWholeRobotControlJavaBridge *) thisPtr)->addIMUToBuffer(std::string(cstr));
         env->ReleaseStringUTFChars(str, cstr);
 
         return result;
@@ -31,7 +31,7 @@ JNIEXPORT jboolean JNICALL addForceTorqueSensorToBufferDelegate
     const char * cstr = env->GetStringUTFChars(str, 0);
     if(cstr != NULL)
     {
-        jboolean result = ((ihmc_ros_control::IHMCValkyrieControlJavaBridge*) thisPtr)->addForceTorqueSensorToBuffer(std::string(cstr));
+        jboolean result = ((ihmc_ros_control::IHMCWholeRobotControlJavaBridge *) thisPtr)->addForceTorqueSensorToBuffer(std::string(cstr));
         env->ReleaseStringUTFChars(str, cstr);
 
         return result;
@@ -44,19 +44,19 @@ JNIEXPORT jboolean JNICALL addForceTorqueSensorToBufferDelegate
 
 namespace ihmc_ros_control
 {
-    IHMCValkyrieControlJavaBridge::IHMCValkyrieControlJavaBridge() :
+    IHMCWholeRobotControlJavaBridge::IHMCWholeRobotControlJavaBridge() :
         ihmcRosControlJavaBridge()
     {
         state_ = CONSTRUCTED;
     }
 
-    IHMCValkyrieControlJavaBridge::~IHMCValkyrieControlJavaBridge()
+    IHMCWholeRobotControlJavaBridge::~IHMCWholeRobotControlJavaBridge()
     {
     }
 
-    bool IHMCValkyrieControlJavaBridge::initRequest(hardware_interface::RobotHW* robot_hw,
-                             ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
-                             std::set<std::string> &claimed_resources)
+    bool IHMCWholeRobotControlJavaBridge::initRequest(hardware_interface::RobotHW* robot_hw,
+                                                      ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
+                                                      std::set<std::string> &claimed_resources)
     {
 
         // check if construction finished cleanly
@@ -99,19 +99,19 @@ namespace ihmc_ros_control
         if(ihmcRosControlJavaBridge.startJVM(hw, jvmArguments, workingDirectory))
         {
 
-            if(!ihmcRosControlJavaBridge.isAssignableFrom(mainClass, valkyrieControlInterfaceClass))
+            if(!ihmcRosControlJavaBridge.isAssignableFrom(mainClass, wholeRobotControlInterfaceClass))
             {
-                ROS_ERROR_STREAM(mainClass << " does not extend " << valkyrieControlInterfaceClass);
+                ROS_ERROR_STREAM(mainClass << " does not extend " << wholeRobotControlInterfaceClass);
                 return false;
             }
 
-            if(!ihmcRosControlJavaBridge.registerNativeMethod(valkyrieControlInterfaceClass, "addIMUToBufferN", "(JLjava/lang/String;)Z", (void*)&addIMUToBufferDelegate))
+            if(!ihmcRosControlJavaBridge.registerNativeMethod(wholeRobotControlInterfaceClass, "addIMUToBufferN", "(JLjava/lang/String;)Z", (void*)&addIMUToBufferDelegate))
             {
                 ROS_ERROR("Cannot register addIMUToBufferN");
                 return false;
             }
 
-            if(!ihmcRosControlJavaBridge.registerNativeMethod(valkyrieControlInterfaceClass, "addForceTorqueSensorToBufferN", "(JLjava/lang/String;)Z", (void*)&addForceTorqueSensorToBufferDelegate))
+            if(!ihmcRosControlJavaBridge.registerNativeMethod(wholeRobotControlInterfaceClass, "addForceTorqueSensorToBufferN", "(JLjava/lang/String;)Z", (void*)&addForceTorqueSensorToBufferDelegate))
             {
                 ROS_ERROR("Cannot register addForceTorqueSensorToBufferN");
                 return false;
@@ -135,22 +135,22 @@ namespace ihmc_ros_control
         return false;
     }
 
-    void IHMCValkyrieControlJavaBridge::starting(const ros::Time &time)
+    void IHMCWholeRobotControlJavaBridge::starting(const ros::Time &time)
     {
         ihmcRosControlJavaBridge.starting(time);
     }
 
-    void IHMCValkyrieControlJavaBridge::update(const ros::Time &time, const ros::Duration &period)
+    void IHMCWholeRobotControlJavaBridge::update(const ros::Time &time, const ros::Duration &period)
     {
         ihmcRosControlJavaBridge.update(time, period);
     }
 
-    void IHMCValkyrieControlJavaBridge::stopping(const ros::Time &time)
+    void IHMCWholeRobotControlJavaBridge::stopping(const ros::Time &time)
     {
         ihmcRosControlJavaBridge.stopping(time);
     }
 
-    bool IHMCValkyrieControlJavaBridge::addIMUToBuffer(std::string imuName)
+    bool IHMCWholeRobotControlJavaBridge::addIMUToBuffer(std::string imuName)
     {
         try
         {
@@ -166,7 +166,7 @@ namespace ihmc_ros_control
         }
     }
 
-    bool IHMCValkyrieControlJavaBridge::addForceTorqueSensorToBuffer(std::string forceTorqueSensorName)
+    bool IHMCWholeRobotControlJavaBridge::addForceTorqueSensorToBuffer(std::string forceTorqueSensorName)
     {
         try
         {
@@ -186,5 +186,5 @@ namespace ihmc_ros_control
 }
 
 PLUGINLIB_EXPORT_CLASS(
-        ihmc_ros_control::IHMCValkyrieControlJavaBridge,
+        ihmc_ros_control::IHMCWholeRobotControlJavaBridge,
         controller_interface::ControllerBase)

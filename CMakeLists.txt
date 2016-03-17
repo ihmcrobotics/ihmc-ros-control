@@ -19,7 +19,7 @@ find_package(JNI REQUIRED)
 include_directories(include ${JNI_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 add_subdirectory(csrc)
 
-install(FILES ${PROJECT_SOURCE_DIR}/val_controller_plugin.xml
+install(FILES ${PROJECT_SOURCE_DIR}/whole_robot_controller_plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   )
 
@@ -38,6 +38,6 @@ install(DIRECTORY launch/
   FILES_MATCHING PATTERN "*.launch"
   )
 
-install(DIRECTORY config/
+install(DIRECTORY configurations/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
   )

@@ -1,0 +1,10 @@
+<library path="lib/libihmc_whole_robot_control_java_bridge">
+	<class
+		name="ihmc_ros_control/IHMCWholeRobotControlJavaBridge"
+		type="ihmc_ros_control::IHMCWholeRobotControlJavaBridge"
+		base_class_type="controller_interface::ControllerBase">
+	<description>
+		ROS Control plugin for interacting with an entire robot (joints, imus, etc.)
+	</description>
+ 	</class>
+</library>

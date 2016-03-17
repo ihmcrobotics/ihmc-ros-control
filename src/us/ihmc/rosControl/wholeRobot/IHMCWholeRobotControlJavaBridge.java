@@ -1,8 +1,8 @@
-package us.ihmc.rosControl.valkyrie;
+package us.ihmc.rosControl.wholeRobot;
 
 import us.ihmc.rosControl.IHMCRosControlJavaBridge;
 
-public abstract class IHMCValkyrieControlJavaBridge extends IHMCRosControlJavaBridge
+public abstract class IHMCWholeRobotControlJavaBridge extends IHMCRosControlJavaBridge
 {
    private final native boolean addIMUToBufferN(long thisPtr, String imuName);
    private final native boolean addForceTorqueSensorToBufferN(long thisPtr, String forceTorqueSensorName);

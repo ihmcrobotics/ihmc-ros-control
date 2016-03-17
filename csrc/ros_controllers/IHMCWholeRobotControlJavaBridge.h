@@ -1,5 +1,5 @@
-#ifndef IHMCVALKYRIECONTROLJAVABRIDGE_H
-#define IHMCVALKYRIECONTROLJAVABRIDGE_H
+#ifndef IHMCWHOLEROBOTCONTROLJAVABRIDGE_H
+#define IHMCWHOLEROBOTCONTROLJAVABRIDGE_H
 
 #include "IHMCRosControlJavaBridge.h"
 
@@ -10,15 +10,15 @@
 
 namespace ihmc_ros_control
 {
-    const std::string valkyrieControlInterfaceClass = "us.ihmc.rosControl.valkyrie.IHMCValkyrieControlJavaBridge";
+    const std::string wholeRobotControlInterfaceClass = "us.ihmc.rosControl.wholeRobot.IHMCWholeRobotControlJavaBridge";
 
 
-    class IHMCValkyrieControlJavaBridge :
+    class IHMCWholeRobotControlJavaBridge :
             public controller_interface::Controller<hardware_interface::EffortJointInterface>
     {
     public:
-        IHMCValkyrieControlJavaBridge();
-        virtual ~IHMCValkyrieControlJavaBridge();
+        IHMCWholeRobotControlJavaBridge();
+        virtual ~IHMCWholeRobotControlJavaBridge();
 
 
         void starting(const ros::Time& time) override;
@@ -53,4 +53,4 @@ namespace ihmc_ros_control
 
 }
 
-#endif // IHMCVALKYRIECONTROLJAVABRIDGE_H
+#endif // IHMCWHOLEROBOTCONTROLJAVABRIDGE_H

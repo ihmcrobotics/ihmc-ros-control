@@ -1,4 +1,4 @@
-package us.ihmc.rosControl.valkyrie;
+package us.ihmc.rosControl.wholeRobot;
 
 public interface IMUHandle
 {

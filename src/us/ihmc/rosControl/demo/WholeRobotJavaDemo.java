@@ -1,9 +1,9 @@
 package us.ihmc.rosControl.demo;
 
 import us.ihmc.rosControl.JointHandle;
-import us.ihmc.rosControl.valkyrie.IHMCValkyrieControlJavaBridge;
+import us.ihmc.rosControl.wholeRobot.IHMCWholeRobotControlJavaBridge;
 
-public class ValkyrieJavaDemo extends IHMCValkyrieControlJavaBridge
+public class WholeRobotJavaDemo extends IHMCWholeRobotControlJavaBridge
 {
    private final static String jointName = "leftKneePitch";
    private JointHandle joint;
