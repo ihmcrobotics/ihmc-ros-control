@@ -1,13 +1,13 @@
 package us.ihmc.rosControl.demo;
 
 import us.ihmc.rosControl.IHMCRosControlJavaBridge;
-import us.ihmc.rosControl.JointHandle;
+import us.ihmc.rosControl.EffortJointHandle;
 
 public class RRBotJavaDemo extends IHMCRosControlJavaBridge
 {
 
-   private JointHandle joint1;
-   private JointHandle joint2;
+   private EffortJointHandle joint1;
+   private EffortJointHandle joint2;
    
    private double qDesiredJoint1 = -1.0;
    private double qDesiredJoint2 = 0.0;
@@ -17,8 +17,8 @@ public class RRBotJavaDemo extends IHMCRosControlJavaBridge
    @Override
    protected void init()
    {
-      joint1 = createJointHandle("joint1");
-      joint2 = createJointHandle("joint2");
+      joint1 = createEffortJointHandle("joint1");
+      joint2 = createEffortJointHandle("joint2");
 
       System.out.println("Finish loading RRBot controller");
    }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>ihmc_ros_control</name>
-  <version>0.0.1</version>
+  <version>0.2.2</version>
   <description>This package provides facilities for using IHMC Java software as
     a ros_control compatible controller through native libraries</description>
 

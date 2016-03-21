@@ -73,22 +73,43 @@ public abstract class IHMCRosControlJavaBridge
    }
    
    /**
-    * Return a new JointHandle. Call from init()
+    * Return a new EffortJointHandle. Call from init()
     * 
     * @param jointName
     * @return
     */
-   protected final JointHandle createJointHandle(String jointName)
+   protected final EffortJointHandle createEffortJointHandle(String jointName)
    {
       if(!inInit)
       {
-         throw new RuntimeException("createJointHandle should only be called from init()");
+         throw new RuntimeException("createEffortJointHandle should only be called from init()");
       }
       if(!addJointToBufferN(thisPtr, jointName))
       {
          throw new IllegalArgumentException("Cannot find joint with name " + jointName);
       }
-      JointHandleImpl jointHandle = new JointHandleImpl(jointName);
+      EffortJointHandleImpl jointHandle = new EffortJointHandleImpl(jointName);
+      updatables.add(jointHandle);
+      return jointHandle;
+   }
+
+   /**
+    * Return a new PositionJointHandle. Call from init()
+    *
+    * @param jointName
+    * @return
+    */
+   protected final PositionJointHandle createPositionJointHandle(String jointName)
+   {
+      if(!inInit)
+      {
+         throw new RuntimeException("createPositionJointHandle should only be called from init()");
+      }
+      if(!addJointToBufferN(thisPtr, jointName))
+      {
+         throw new IllegalArgumentException("Cannot find joint with name " + jointName);
+      }
+      PositionJointHandleImpl jointHandle = new PositionJointHandleImpl(jointName);
       updatables.add(jointHandle);
       return jointHandle;
    }
@@ -146,11 +167,9 @@ public abstract class IHMCRosControlJavaBridge
    
    /**
     * This function gets called when the controller gets initialized. Use this function to setup
-    * the effort interfaces.
+    * the resource interfaces.
     * 
     * If an Exception gets thrown, the controller will shutdown.
-    * 
-    * @see createEffortJointInterface
     */
    protected abstract void init();
    

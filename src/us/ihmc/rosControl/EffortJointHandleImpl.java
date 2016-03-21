@@ -2,7 +2,7 @@ package us.ihmc.rosControl;
 
 import java.nio.ByteBuffer;
 
-class JointHandleImpl implements JointHandle, NativeUpdateableInterface
+class EffortJointHandleImpl implements EffortJointHandle, NativeUpdateableInterface
 {
    private final String jointName;
    
@@ -13,7 +13,7 @@ class JointHandleImpl implements JointHandle, NativeUpdateableInterface
    private double desiredEffort;
    
    
-   JointHandleImpl(String jointName)
+   EffortJointHandleImpl(String jointName)
    {
       this.jointName = jointName;
    }

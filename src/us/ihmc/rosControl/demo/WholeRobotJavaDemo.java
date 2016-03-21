@@ -1,12 +1,12 @@
 package us.ihmc.rosControl.demo;
 
-import us.ihmc.rosControl.JointHandle;
+import us.ihmc.rosControl.EffortJointHandle;
 import us.ihmc.rosControl.wholeRobot.IHMCWholeRobotControlJavaBridge;
 
 public class WholeRobotJavaDemo extends IHMCWholeRobotControlJavaBridge
 {
    private final static String jointName = "leftKneePitch";
-   private JointHandle joint;
+   private EffortJointHandle joint;
 
    private double q;
    private double direction;
@@ -16,7 +16,7 @@ public class WholeRobotJavaDemo extends IHMCWholeRobotControlJavaBridge
    @Override
    protected void init()
    {
-      joint = createJointHandle(jointName);
+      joint = createEffortJointHandle(jointName);
    }
 
    @Override
