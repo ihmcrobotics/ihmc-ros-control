@@ -1,4 +1,4 @@
-package us.ihmc.rosControl;
+package us.ihmc.rosControl.wholeRobot;
 
 /**
  * Created by parallels on 3/21/16.

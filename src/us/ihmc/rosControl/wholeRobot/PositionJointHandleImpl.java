@@ -1,4 +1,6 @@
-package us.ihmc.rosControl;
+package us.ihmc.rosControl.wholeRobot;
+
+import us.ihmc.rosControl.NativeUpdateableInterface;
 
 import java.nio.ByteBuffer;
 

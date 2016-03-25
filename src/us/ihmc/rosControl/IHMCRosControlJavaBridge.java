@@ -93,28 +93,6 @@ public abstract class IHMCRosControlJavaBridge
       return jointHandle;
    }
 
-   /**
-    * Return a new PositionJointHandle. Call from init()
-    *
-    * @param jointName
-    * @return
-    */
-   protected final PositionJointHandle createPositionJointHandle(String jointName)
-   {
-      if(!inInit)
-      {
-         throw new RuntimeException("createPositionJointHandle should only be called from init()");
-      }
-      if(!addJointToBufferN(thisPtr, jointName))
-      {
-         throw new IllegalArgumentException("Cannot find joint with name " + jointName);
-      }
-      PositionJointHandleImpl jointHandle = new PositionJointHandleImpl(jointName);
-      updatables.add(jointHandle);
-      return jointHandle;
-   }
-   
-   
    boolean initFromNative(long thisPtr, long delegatePtr)
    {
       try

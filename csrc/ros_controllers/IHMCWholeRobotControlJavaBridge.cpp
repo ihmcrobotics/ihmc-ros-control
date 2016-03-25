@@ -7,6 +7,22 @@
 #include <jni.h>
 #include <hardware_interface/joint_command_interface.h>
 
+JNIEXPORT jboolean JNICALL addPositionJointToBufferDelegate
+        (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
+{
+    const char * cstr = env->GetStringUTFChars(str, 0);
+    if(cstr != NULL)
+    {
+        jboolean result = ((ihmc_ros_control::IHMCWholeRobotControlJavaBridge *) thisPtr)->addPositionJointToBuffer(std::string(cstr));
+        env->ReleaseStringUTFChars(str, cstr);
+
+        return result;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 JNIEXPORT jboolean JNICALL addIMUToBufferDelegate
   (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
@@ -105,6 +121,12 @@ namespace ihmc_ros_control
                 return false;
             }
 
+            if(!ihmcRosControlJavaBridge.registerNativeMethod(wholeRobotControlInterfaceClass, "addPositionJointToBufferN", "(JLjava/lang/String;)Z", (void*)&addPositionJointToBufferDelegate))
+            {
+                ROS_ERROR("Cannot register addPositionJointToBufferN");
+                return false;
+            }
+
             if(!ihmcRosControlJavaBridge.registerNativeMethod(wholeRobotControlInterfaceClass, "addIMUToBufferN", "(JLjava/lang/String;)Z", (void*)&addIMUToBufferDelegate))
             {
                 ROS_ERROR("Cannot register addIMUToBufferN");
@@ -119,6 +141,7 @@ namespace ihmc_ros_control
 
             imuSensorInterface = robot_hw->get<hardware_interface::ImuSensorInterface>();
             forceTorqueSensorInterface = robot_hw->get<hardware_interface::ForceTorqueSensorInterface>();
+            positionJointInterface = robot_hw->get<hardware_interface::PositionJointInterface>();
 
             if(ihmcRosControlJavaBridge.createController(mainClass, (long long) this))
             {
@@ -148,6 +171,22 @@ namespace ihmc_ros_control
     void IHMCWholeRobotControlJavaBridge::stopping(const ros::Time &time)
     {
         ihmcRosControlJavaBridge.stopping(time);
+    }
+
+    bool IHMCWholeRobotControlJavaBridge::addPositionJointToBuffer(std::string jointName)
+    {
+        try
+        {
+            const hardware_interface::JointHandle& handle = positionJointInterface->getHandle(jointName);
+            NativeJointHandleHolder* holder = new NativeJointHandleHolder(handle);
+            ihmcRosControlJavaBridge.addUpdatable(holder);
+            return true;
+        }
+        catch(hardware_interface::HardwareInterfaceException e)
+        {
+            ROS_ERROR_STREAM(e.what());
+            return false;
+        }
     }
 
     bool IHMCWholeRobotControlJavaBridge::addIMUToBuffer(std::string imuName)

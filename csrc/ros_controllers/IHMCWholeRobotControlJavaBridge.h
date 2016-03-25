@@ -26,6 +26,13 @@ namespace ihmc_ros_control
         void stopping(const ros::Time&);
 
         /**
+         * @brief addPositionJointToBuffer Add a PositionJointInterface to the buffers, called from Java init()
+         * @param jointName
+         * @return
+         */
+        bool addPositionJointToBuffer(std::string jointName);
+
+        /**
          * @brief addIMUToBuffer Add an IMU to the buffers, called from Java init()
          * @param imuName
          * @return
@@ -47,6 +54,7 @@ namespace ihmc_ros_control
 
     private:
         IHMCRosControlJavaBridge ihmcRosControlJavaBridge;
+        hardware_interface::PositionJointInterface* positionJointInterface;
         hardware_interface::ImuSensorInterface* imuSensorInterface;
         hardware_interface::ForceTorqueSensorInterface* forceTorqueSensorInterface;
     };
