@@ -1,0 +1,14 @@
+add_library(ihmc_ros_control_java_bridge SHARED IHMCRosControlJavaBridge.cpp NativeJointHandleHolder.cpp)
+target_link_libraries(ihmc_ros_control_java_bridge jvmLauncher ${catkin_LIBRARIES})
+
+add_library(ihmc_whole_robot_control_java_bridge SHARED IHMCWholeRobotControlJavaBridge.cpp NativeIMUHandleHolder.cpp NativeForceTorqueSensorHandleHolder.cpp)
+target_link_libraries(ihmc_whole_robot_control_java_bridge jvmLauncher ihmc_ros_control_java_bridge ${catkin_LIBRARIES})
+
+set_property(TARGET ihmc_ros_control_java_bridge PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set_property(TARGET ihmc_whole_robot_control_java_bridge PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+install(TARGETS
+         ihmc_ros_control_java_bridge ihmc_whole_robot_control_java_bridge
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)

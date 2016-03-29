@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>ihmc_ros_control</name>
+  <version>0.3.0</version>
+  <description>This package provides facilities for using IHMC Java software as
+    a ros_control compatible controller through native libraries</description>
+
+  <author email="jsmith@ihmc.us">Jesper Smith</author>
+  <author email="dstephen@ihmc.us">Doug Stephen</author>
+  <maintainer email="jsmith@ihmc.us">Jesper Smith</maintainer>
+  <maintainer email="dstephen@ihmc.us">Doug Stephen</maintainer>
+
+  <url type="website">https://github.org/ihmcrobotics/ihmc_ros_control</url>
+
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>controller_interface</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>effort_controllers</build_depend>
+  <run_depend>controller_interface</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>effort_controllers</run_depend>
+
+  <export>
+    <controller_interface plugin ="${prefix}/whole_robot_controller_plugin.xml"/>
+  </export>
+</package>
