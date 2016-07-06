@@ -59,7 +59,7 @@ repositories {
 ```
 - Add the following dependency to your gradle dependencies:
 ```gradle
-compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.3.0'
+compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.3.1'
 ```
 
 Then implement either "IHMCRosControlJavaBridge" or "IHMCWholeRobotControlJavaBridge", depending on which hardware interfaces you would like to control.
