@@ -139,9 +139,9 @@ Launcher::Launcher(std::string vmOptions)
         std::strcpy (javaOptions[i].optionString, options.at(i).c_str());
     }
 
-    vmArguments.nOptions = 1;
+    vmArguments.nOptions = (jint) options.size();
     vmArguments.options = javaOptions;
-    vmArguments.ignoreUnrecognized = true;
+    vmArguments.ignoreUnrecognized = JNI_TRUE;
 }
 
 bool Launcher::startVM(std::string workingDirectory)
