@@ -4,9 +4,6 @@
 #include <cstring>
 #include <algorithm>
 
-#include <jni.h>
-#include <vector>
-#include <sys/types.h>
 #include <unistd.h>
 #include <linux/limits.h>
 #include <dirent.h>

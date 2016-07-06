@@ -1,8 +1,6 @@
 
 #include "jvmLauncher/launcher.h"
 #include <iostream>
-#include <jni.h>
-#include <time.h>
 
 JNIEXPORT void JNICALL callVoidFunctionWithString
   (JNIEnv *env, jobject obj, jstring str)
