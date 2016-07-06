@@ -15,7 +15,7 @@ namespace ihmc_ros_control
         virtual ~NativeJointStateHandleHolder();
 
         void readStateIntoBuffer(int& index, double* buffer);
-        virtual void writeStateIntoBuffer(int& index, double* buffer);
+        virtual void writeCommandIntoBuffer(int& index, double* buffer);
 
         int stateSize();
         virtual int commandSize();
