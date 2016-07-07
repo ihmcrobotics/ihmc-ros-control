@@ -2,6 +2,7 @@
 
 Provides a bridge between Java and ROS Control. The simple interface, `ihmc_ros_control::IHMCRosControlJavaBridge` and the similarly named Java interface, provides a way to write controllers that operate on the resources exposed by `ros_control`'s `hardware_interface::EffortJointInterface`. `ihmc_ros_control::IHMCWholeRobotControlJavaBridge` is an extension of the base interface and allows for implementing a `ros_control` controller that hooks in to the `initRequest` method to acquire resources of multiple types in a single ROS plugin. Currently, you can use this interface to write controllers that work with all of the following simultaneously:
 
+- `hardware_interface::JointStateInterface`
 - `hardware_interface::EffortJointInterface`
 - `hardware_interface::PositionJointInterface`
 - `hardware_interface::ImuSensorInterface`
@@ -59,7 +60,7 @@ repositories {
 ```
 - Add the following dependency to your gradle dependencies:
 ```gradle
-compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.3.1'
+compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.4.0'
 ```
 
 Then implement either "IHMCRosControlJavaBridge" or "IHMCWholeRobotControlJavaBridge", depending on which hardware interfaces you would like to control.
