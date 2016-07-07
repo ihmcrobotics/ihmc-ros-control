@@ -1,4 +1,4 @@
-add_library(ihmc_ros_control_java_bridge SHARED IHMCRosControlJavaBridge.cpp NativeJointHandleHolder.cpp)
+add_library(ihmc_ros_control_java_bridge SHARED IHMCRosControlJavaBridge.cpp NativeJointHandleHolder.cpp NativeJointStateHandleHolder.cpp)
 target_link_libraries(ihmc_ros_control_java_bridge jvmLauncher ${catkin_LIBRARIES})
 
 add_library(ihmc_whole_robot_control_java_bridge SHARED IHMCWholeRobotControlJavaBridge.cpp NativeIMUHandleHolder.cpp NativeForceTorqueSensorHandleHolder.cpp)

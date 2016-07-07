@@ -4,9 +4,33 @@ import us.ihmc.rosControl.IHMCRosControlJavaBridge;
 
 public abstract class IHMCWholeRobotControlJavaBridge extends IHMCRosControlJavaBridge
 {
+   private final native boolean addJointStateToBufferN(long thisPtr, String jointName);
    private final native boolean addPositionJointToBufferN(long thisPtr, String jointName);
    private final native boolean addIMUToBufferN(long thisPtr, String imuName);
    private final native boolean addForceTorqueSensorToBufferN(long thisPtr, String forceTorqueSensorName);
+
+
+   /**
+    * Return a new JointStateHandle. Call from init()
+    *
+    * @param jointName
+    * @return
+    */
+   protected final JointStateHandle createJointStateHandle(String jointName)
+   {
+      if(!inInit())
+      {
+         throw new RuntimeException("createPositionJointHandle should only be called from init()");
+      }
+      if(!addJointStateToBufferN(getDelegatePtr(), jointName))
+      {
+         throw new IllegalArgumentException("Cannot find joint with name " + jointName);
+      }
+
+      JointStateHandleImpl jointHandle = new JointStateHandleImpl(jointName);
+      addUpdatable(jointHandle);
+      return jointHandle;
+   }
 
 
    /**

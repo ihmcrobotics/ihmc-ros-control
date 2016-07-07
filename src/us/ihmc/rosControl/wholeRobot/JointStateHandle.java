@@ -1,15 +1,13 @@
 package us.ihmc.rosControl.wholeRobot;
 
 /**
- * Created by dstephen on 3/21/16.
+ * Created by dstephen on 7/6/16.
  */
-public interface PositionJointHandle
+public interface JointStateHandle
 {
    public String getName();
 
    public double getEffort();
    public double getPosition();
    public double getVelocity();
-
-   public void setDesiredPosition(double desiredEffort);
 }
