@@ -1,11 +1,7 @@
 #include "IHMCRosControlJavaBridge.h"
 #include "NativeJointHandleHolder.h"
 
-#include <iostream>
-#include <string>
 #include <pluginlib/class_list_macros.h>
-#include <jni.h>
-#include <hardware_interface/joint_command_interface.h>
 
 
 JNIEXPORT void rosError(JNIEnv *env, jclass, jstring error) {

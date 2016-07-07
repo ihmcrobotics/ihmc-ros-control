@@ -3,7 +3,7 @@
 
 namespace ihmc_ros_control
 {
-    NativeJointHandleHolder::NativeJointHandleHolder(hardware_interface::JointHandle handle) :
+    NativeJointHandleHolder::NativeJointHandleHolder(hardware_interface::JointHandle handle) : NativeJointStateHandleHolder(handle),
         handle(handle)
     {
     }
@@ -13,21 +13,9 @@ namespace ihmc_ros_control
 
     }
 
-    void NativeJointHandleHolder::readStateIntoBuffer(int& index, double* buffer)
-    {
-        buffer[index++] = handle.getEffort();
-        buffer[index++] = handle.getPosition();
-        buffer[index++] = handle.getVelocity();
-    }
-
     void NativeJointHandleHolder::writeCommandIntoBuffer(int& index, double* buffer)
     {
         handle.setCommand(buffer[index++]);
-    }
-
-    int NativeJointHandleHolder::stateSize()
-    {
-        return 3;
     }
 
     int NativeJointHandleHolder::commandSize()
