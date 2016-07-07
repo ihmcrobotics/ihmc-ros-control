@@ -4,6 +4,7 @@ import us.ihmc.rosControl.IHMCRosControlJavaBridge;
 
 public abstract class IHMCWholeRobotControlJavaBridge extends IHMCRosControlJavaBridge
 {
+   private final native boolean addJointStateToBufferN(long thisPtr, String jointName);
    private final native boolean addPositionJointToBufferN(long thisPtr, String jointName);
    private final native boolean addIMUToBufferN(long thisPtr, String imuName);
    private final native boolean addForceTorqueSensorToBufferN(long thisPtr, String forceTorqueSensorName);
