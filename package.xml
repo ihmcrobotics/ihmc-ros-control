@@ -16,11 +16,13 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>controller_interface</build_depend>
-  <build_depend>hardware_interface</build_depend>
   <build_depend>effort_controllers</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>java</build_depend>
   <run_depend>controller_interface</run_depend>
-  <run_depend>hardware_interface</run_depend>
   <run_depend>effort_controllers</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>java</run_depend>
 
   <export>
     <controller_interface plugin ="${prefix}/whole_robot_controller_plugin.xml"/>
