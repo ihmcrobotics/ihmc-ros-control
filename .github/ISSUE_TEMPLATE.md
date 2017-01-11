@@ -1,9 +1,9 @@
-| Required Info ||
+| Required Info | |
 |---|---|
-|Version or commit hash||
-|Operating System||
-|JDK||
-|ROS version||
+|Version or commit hash| |
+|Operating System| |
+|JDK| |
+|ROS version| |
 
 ####Steps to reproduce issue
 <!-- Detailed instructions on how to reliably reproduce this issue -->
