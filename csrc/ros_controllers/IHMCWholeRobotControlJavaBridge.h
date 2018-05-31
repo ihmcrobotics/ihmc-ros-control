@@ -56,7 +56,7 @@ namespace ihmc_ros_control
     protected:
         virtual bool initRequest(hardware_interface::RobotHW* robot_hw,
                                  ros::NodeHandle& root_nh, ros::NodeHandle& controller_nh,
-                                 std::set<std::string>& claimed_resources) override;
+                                 controller_interface::ControllerBase::ClaimedResources& claimed_resources) override;
 
 
     private:
