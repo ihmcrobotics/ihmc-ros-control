@@ -83,7 +83,7 @@ namespace ihmc_ros_control
 
     bool IHMCWholeRobotControlJavaBridge::initRequest(hardware_interface::RobotHW* robot_hw,
                                                       ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
-                                                      std::set<std::string> &claimed_resources)
+                                                      controller_interface::ControllerBase::ClaimedResources& claimed_resources)
     {
 
         // check if construction finished cleanly
@@ -163,7 +163,8 @@ namespace ihmc_ros_control
 
             if(ihmcRosControlJavaBridge.createController(mainClass, (long long) this))
             {
-                claimed_resources = hw->getClaims();
+                hardware_interface::InterfaceResources iface_res(controller_interface::Controller<hardware_interface::EffortJointInterface>::getHardwareInterfaceType(), hw->getClaims());
+                claimed_resources.assign(1, iface_res);
                 hw->clearClaims();
 
                 // success

@@ -10,17 +10,21 @@ Provides a bridge between Java and ROS Control. The simple interface, `ihmc_ros_
 
 ## Installation
 
-`ihmc_ros_control` is a Catkin package. We currently support ROS Indigo on Ubuntu 14.04 LTS. We plan to continue targeting LTS releases of both ROS and Ubuntu.
+`ihmc_ros_control` is a Catkin package. We currently support ROS Indigo on Ubuntu 14.04 LTS with release 0.5.0 and ROS Kinetic on Ubuntu 16.04 LTS with release 0.6.0. We plan to continue targeting LTS releases of both ROS and Ubuntu.
 
 We use some C++11 features in `ihmc_ros_control`. The versions of gcc and clang available in Ubuntu 14.04 should be fine, and we have modified our CMakeLists.txt accordingly
-to set up the C++11 features correctly. You will also need a Java JDK (not JRE), as you will need the Java Native Interface headers to compile the C++ code. We support OpenJDK 7/8 and Oracle JDK 7/8. The quickest way to get started on Ubuntu 14.04 is to just use OpenJDK 7's JDK.
+to set up the C++11 features correctly. You will also need a Java JDK (not JRE), as you will need the Java Native Interface headers to compile the C++ code. We support OpenJDK 8 and Oracle JDK 8.
+
+On Ubuntu 16.04:
 
 ```bash
 $ sudo apt-get update
-$ sudo apt-get install openjdk-7-jdk
+$ sudo apt-get install openjdk-8-jdk
 ```
 
-To install, simply clone the repository in to a catkin workspace and then `catkin_make install` or `catkin build && catkin install` if using `catkin_tools`.
+Ubuntu 14.04 may require tapping a PPA: https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa
+
+To install `ihmc-ros-control`, simply clone the repository in to a catkin workspace and then `catkin_make install` or `catkin build && catkin install` if using `catkin_tools`.
 If you have an existing catkin workspace, we recommend "overlaying" any IHMC code on top of your code in its own workspace, e.g. `ihmc_catkin_ws`. If you don't currently have any IHMC code, that might look something like:
 
 ```bash
@@ -41,7 +45,7 @@ You may also be interested in [ihmc_workspaces](https://github.com/ihmcrobotics/
 If CMake has problems finding the JNI packages or if there are Java/JNI related compilation problems during `catkin_make`, export JAVA_HOME before running `catkin_make`:
 
 ```bash
-$ export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
+$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 ```
 
 ## Writing controllers (Java)
@@ -60,7 +64,7 @@ repositories {
 ```
 - Add the following dependency to your gradle dependencies:
 ```gradle
-compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.5.0'
+compile group: 'us.ihmc', name: 'IHMCRosControl', version: '0.6.0'
 ```
 
 Then implement either "IHMCRosControlJavaBridge" or "IHMCWholeRobotControlJavaBridge", depending on which hardware interfaces you would like to control.
