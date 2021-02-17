@@ -74,7 +74,7 @@ namespace ihmc_ros_control
     IHMCWholeRobotControlJavaBridge::IHMCWholeRobotControlJavaBridge() :
         ihmcRosControlJavaBridge()
     {
-        state_ = CONSTRUCTED;
+        state_ = ControllerState::CONSTRUCTED;
     }
 
     IHMCWholeRobotControlJavaBridge::~IHMCWholeRobotControlJavaBridge()
@@ -87,7 +87,7 @@ namespace ihmc_ros_control
     {
 
         // check if construction finished cleanly
-        if (state_ != CONSTRUCTED){
+        if (state_ != ControllerState::CONSTRUCTED){
           ROS_ERROR("Cannot initialize this controller because it failed to be constructed");
           return false;
         }
@@ -168,7 +168,7 @@ namespace ihmc_ros_control
                 hw->clearClaims();
 
                 // success
-                state_ = INITIALIZED;
+                state_ = ControllerState::INITIALIZED;
                 return true;
 
             }
