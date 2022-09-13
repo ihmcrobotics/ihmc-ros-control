@@ -8,6 +8,7 @@ public abstract class IHMCWholeRobotControlJavaBridge extends IHMCRosControlJava
    private final native boolean addPositionJointToBufferN(long thisPtr, String jointName);
    private final native boolean addIMUToBufferN(long thisPtr, String imuName);
    private final native boolean addForceTorqueSensorToBufferN(long thisPtr, String forceTorqueSensorName);
+   private final native boolean addJointGainsToBufferN(long thisPtr, String jointName);
 
 
    /**
@@ -51,6 +52,28 @@ public abstract class IHMCWholeRobotControlJavaBridge extends IHMCRosControlJava
       }
 
       PositionJointHandleImpl jointHandle = new PositionJointHandleImpl(jointName);
+      addUpdatable(jointHandle);
+      return jointHandle;
+   }
+   
+   /**
+    * Return a new JointGainsHandle. Call from init()
+    *
+    * @param jointName
+    * @return
+    */
+   protected final JointGainsHandle createJointGainsHandle(String jointName)
+   {
+      if(!inInit())
+      {
+         throw new RuntimeException("createJointGainsHandle should only be called from init()");
+      }
+      if(!addJointGainsToBufferN(getDelegatePtr(), jointName))
+      {
+         throw new IllegalArgumentException("Cannot find joint with name " + jointName);
+      }
+
+      JointGainsHandleImpl jointHandle = new JointGainsHandleImpl(jointName);
       addUpdatable(jointHandle);
       return jointHandle;
    }
