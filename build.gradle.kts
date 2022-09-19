@@ -4,7 +4,7 @@ plugins {
 
 ihmc {
     group = "us.ihmc"
-    version = "0.6.0"
+    version = "0.7.0"
     vcsUrl = "https://bitbucket.ihmc.us/scm/libs/ihmc-ros-control.git"
     openSource = true
     maintainer = "Duncan Calvert"
