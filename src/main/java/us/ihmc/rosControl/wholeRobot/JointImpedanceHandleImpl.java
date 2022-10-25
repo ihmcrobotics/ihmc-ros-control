@@ -4,7 +4,7 @@ import us.ihmc.rosControl.NativeUpdateableInterface;
 
 import java.nio.ByteBuffer;
 
-class JointGainsHandleImpl implements JointGainsHandle, NativeUpdateableInterface
+class JointImpedanceHandleImpl implements JointImpedanceHandle, NativeUpdateableInterface
 {
    private final String jointName;
 
@@ -13,7 +13,7 @@ class JointGainsHandleImpl implements JointGainsHandle, NativeUpdateableInterfac
    private double position;
    private double velocity;
 
-   JointGainsHandleImpl(String jointName)
+   JointImpedanceHandleImpl(String jointName)
    {
       this.jointName = jointName;
    }

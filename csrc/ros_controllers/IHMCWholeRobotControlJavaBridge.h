@@ -7,7 +7,7 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/imu_sensor_interface.h>
 #include <hardware_interface/force_torque_sensor_interface.h>
-#include "val_robot_interface/JointGainsInterface.hpp"
+#include "val_robot_interface/JointImpedanceInterface.hpp"
 
 namespace ihmc_ros_control
 {
@@ -45,7 +45,7 @@ namespace ihmc_ros_control
          * @param jointName
          * @return
          */
-        bool addJointGainsToBuffer(std::string jointName);
+        bool addJointImpedanceToBuffer(std::string jointName);
 
         /**
          * @brief addIMUToBuffer Add an IMU to the buffers, called from Java init()
@@ -73,7 +73,7 @@ namespace ihmc_ros_control
         hardware_interface::ImuSensorInterface* imuSensorInterface;
         hardware_interface::ForceTorqueSensorInterface* forceTorqueSensorInterface;
         hardware_interface::JointStateInterface* jointStateInterface;
-        hardware_interface::JointGainsInterface* jointGainsInterface;
+        hardware_interface::JointImpedanceInterface* jointImpedanceInterface;
     };
 
 }

@@ -3,17 +3,17 @@
 
 #include "NativeUpdateableInterface.h"
 #include <hardware_interface/joint_command_interface.h>
-#include "val_robot_interface/JointGainsInterface.hpp"
+#include "val_robot_interface/JointImpedanceInterface.hpp"
 
 
 namespace ihmc_ros_control
 {
-    class NativeJointGainsHandleHolder : public NativeUpdateableInterface
+    class NativeJointImpedanceHandleHolder : public NativeUpdateableInterface
     {
     public:
-        NativeJointGainsHandleHolder(hardware_interface::JointGainsHandle handle);
+        NativeJointImpedanceHandleHolder(hardware_interface::JointImpedanceHandle handle);
 
-        virtual ~NativeJointGainsHandleHolder();
+        virtual ~NativeJointImpedanceHandleHolder();
 
         // Write the command from IHMC to the joint
         void writeCommandIntoBuffer(int& index, double* buffer);
@@ -25,7 +25,7 @@ namespace ihmc_ros_control
         int commandSize();
 
     private:
-        hardware_interface::JointGainsHandle handle;
+        hardware_interface::JointImpedanceHandle handle;
     };
 }
 

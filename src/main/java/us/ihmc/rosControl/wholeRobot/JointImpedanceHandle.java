@@ -1,6 +1,6 @@
 package us.ihmc.rosControl.wholeRobot;
 
-public interface JointGainsHandle {
+public interface JointImpedanceHandle {
     public String getName();
 
     public void setDamping(double desiredDamping);

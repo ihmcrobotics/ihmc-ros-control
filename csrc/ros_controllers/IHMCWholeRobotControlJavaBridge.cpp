@@ -1,7 +1,7 @@
 #include "IHMCWholeRobotControlJavaBridge.h"
 
 #include "NativeIMUHandleHolder.h"
-#include "NativeJointGainsHandleHolder.h"
+#include "NativeJointImpedanceHandleHolder.h"
 #include "NativeForceTorqueSensorHandleHolder.h"
 
 #include <pluginlib/class_list_macros.h>
@@ -70,13 +70,13 @@ JNIEXPORT jboolean JNICALL addForceTorqueSensorToBufferDelegate
     }
 }
 
-JNIEXPORT jboolean JNICALL addJointGainsToBufferDelegate
+JNIEXPORT jboolean JNICALL addJointImpedanceToBufferDelegate
   (JNIEnv *env, jobject obj, jlong thisPtr, jstring str)
 {
     const char * cstr = env->GetStringUTFChars(str, 0);
     if(cstr != NULL)
     {
-        jboolean result = ((ihmc_ros_control::IHMCWholeRobotControlJavaBridge *) thisPtr)->addJointGainsToBuffer(std::string(cstr));
+        jboolean result = ((ihmc_ros_control::IHMCWholeRobotControlJavaBridge *) thisPtr)->addJointImpedanceToBuffer(std::string(cstr));
         env->ReleaseStringUTFChars(str, cstr);
 
         return result;
@@ -174,7 +174,7 @@ namespace ihmc_ros_control
                 return false;
             }
 
-            if(!ihmcRosControlJavaBridge.registerNativeMethod(wholeRobotControlInterfaceClass, "addJointGainsToBufferN", "(JLjava/lang/String;)Z", (void*)&addJointGainsToBufferDelegate))
+            if(!ihmcRosControlJavaBridge.registerNativeMethod(wholeRobotControlInterfaceClass, "addJointImpedanceToBufferN", "(JLjava/lang/String;)Z", (void*)&addJointImpedanceToBufferDelegate))
             {
                 ROS_ERROR("Cannot register addIMUToBufferN");
                 return false;
@@ -184,7 +184,7 @@ namespace ihmc_ros_control
             forceTorqueSensorInterface = robot_hw->get<hardware_interface::ForceTorqueSensorInterface>();
             positionJointInterface = robot_hw->get<hardware_interface::PositionJointInterface>();
             jointStateInterface = robot_hw->get<hardware_interface::JointStateInterface>();
-            jointGainsInterface = robot_hw->get<hardware_interface::JointGainsInterface>();
+            jointImpedanceInterface = robot_hw->get<hardware_interface::JointImpedanceInterface>();
 
             // Explicit checks here because if the Java code attempts to access a non-existent
             // interface, the crash that results is not straightforward to interpret.
@@ -206,7 +206,7 @@ namespace ihmc_ros_control
                 ROS_WARN("No joint state interface available");
             }
 
-            if (jointGainsInterface == 0) {
+            if (jointImpedanceInterface == 0) {
                 ROS_WARN("No joint gains interface available");
             }
 
@@ -272,12 +272,12 @@ namespace ihmc_ros_control
         }
     }
 
-    bool IHMCWholeRobotControlJavaBridge::addJointGainsToBuffer(std::string jointName)
+    bool IHMCWholeRobotControlJavaBridge::addJointImpedanceToBuffer(std::string jointName)
     {
         try
         {
-            const hardware_interface::JointGainsHandle& handle = jointGainsInterface->getHandle(jointName);
-            NativeJointGainsHandleHolder* holder = new NativeJointGainsHandleHolder(handle);
+            const hardware_interface::JointImpedanceHandle& handle = jointImpedanceInterface->getHandle(jointName);
+            NativeJointImpedanceHandleHolder* holder = new NativeJointImpedanceHandleHolder(handle);
             ihmcRosControlJavaBridge.addUpdatable(holder);
             return true;
         }
