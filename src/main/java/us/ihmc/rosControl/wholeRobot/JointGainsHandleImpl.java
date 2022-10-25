@@ -10,6 +10,8 @@ class JointGainsHandleImpl implements JointGainsHandle, NativeUpdateableInterfac
 
    private double stiffness;
    private double damping;
+   private double position;
+   private double velocity;
 
    JointGainsHandleImpl(String jointName)
    {
@@ -40,9 +42,23 @@ class JointGainsHandleImpl implements JointGainsHandle, NativeUpdateableInterfac
    }
 
    @Override
+   public void setPosition(double position)
+   {
+      this.position = position;
+   }
+
+   @Override
+   public void setVelocity(double velocity)
+   {
+      this.velocity = velocity;
+   }
+
+   @Override
    public void writeToBuffer(ByteBuffer buffer)
    {
       buffer.putDouble(this.stiffness);
       buffer.putDouble(this.damping);
+      buffer.putDouble(this.position);
+      buffer.putDouble(this.velocity);
    }
 }

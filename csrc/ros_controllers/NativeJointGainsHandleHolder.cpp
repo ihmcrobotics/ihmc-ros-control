@@ -17,6 +17,8 @@ namespace ihmc_ros_control
     {
         handle.setStiffnessCommand(buffer[index++]);
         handle.setDampingCommand(buffer[index++]);
+        handle.setPositionCommand(buffer[index++]);
+        handle.setVelocityCommand(buffer[index++]);
     }
 
     void NativeJointGainsHandleHolder::readStateIntoBuffer(int& index, double* buffer)
@@ -31,7 +33,7 @@ namespace ihmc_ros_control
 
     int NativeJointGainsHandleHolder::commandSize()
     {
-        return 2;
+        return 4;
     }
 
 }

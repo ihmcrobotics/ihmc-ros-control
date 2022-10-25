@@ -5,4 +5,6 @@ public interface JointGainsHandle {
 
     public void setDamping(double desiredDamping);
     public void setStiffness(double desiredStiffness);
+    public void setPosition(double desiredPosition);
+    public void setVelocity(double desiredVelocity);
 }
