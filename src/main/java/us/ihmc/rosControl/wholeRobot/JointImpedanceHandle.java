@@ -7,4 +7,9 @@ public interface JointImpedanceHandle {
     public void setStiffness(double desiredStiffness);
     public void setPosition(double desiredPosition);
     public void setVelocity(double desiredVelocity);
+
+    public double getDamping();
+    public double getStiffness();
+    public double getPosition();
+    public double getVelocity();
 }

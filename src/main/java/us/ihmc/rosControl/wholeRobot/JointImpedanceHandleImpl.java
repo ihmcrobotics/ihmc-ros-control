@@ -30,6 +30,31 @@ class JointImpedanceHandleImpl implements JointImpedanceHandle, NativeUpdateable
    }
 
    @Override
+   public double getStiffness()
+   {
+      return stiffness;
+   }
+
+   @Override
+   public double getDamping()
+   {
+      return damping;
+   }
+
+   @Override
+   public double getPosition()
+   {
+      return position;
+   }
+
+   @Override
+   public double getVelocity()
+   {
+      return velocity;
+   }
+
+
+   @Override
    public void setStiffness(double stiffness)
    {
       this.stiffness = stiffness;
