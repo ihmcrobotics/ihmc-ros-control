@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <linux/limits.h>
 #include <dirent.h>
+#include <vector>
 
 void Launcher::displayJNIError(std::string prefix, int error)
 {

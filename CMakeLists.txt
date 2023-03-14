@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   controller_interface
   hardware_interface
   effort_controllers
+  val_robot_interface
   )
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
